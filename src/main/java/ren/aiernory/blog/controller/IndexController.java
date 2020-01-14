@@ -1,9 +1,7 @@
 package ren.aiernory.blog.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -13,14 +11,13 @@ import org.springframework.web.servlet.ModelAndView;
  * @Description:
  */
 @Controller
-public class HelloController {
+public class IndexController {
     
-    @GetMapping("hello")
-    ModelAndView hello(ModelAndView model){
-        model.setViewName("hello");
+    @GetMapping("/")
+    ModelAndView index(ModelAndView model){
+        model.setViewName("index");
         
         return model;
-        
     }
     
     
