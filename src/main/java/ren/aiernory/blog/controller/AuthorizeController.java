@@ -4,14 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ren.aiernory.blog.dto.AccessTokenDTO;
 import ren.aiernory.blog.dto.GithubUser;
+import ren.aiernory.blog.model.User;
 import ren.aiernory.blog.provider.GithubProvider;
+import ren.aiernory.blog.service.UserService;
 
-import javax.accessibility.AccessibleSelection;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
 
 /**
  * @author Aiernory
@@ -25,7 +28,8 @@ public class AuthorizeController {
     
     @Autowired
     private GithubProvider githubProvider;
-    
+    @Autowired
+    private UserService userService;
     
     @Value("${github.client.id}")
     private String clientId;
@@ -36,21 +40,75 @@ public class AuthorizeController {
     
     
     @GetMapping("/callback")
-    public String callback(@RequestParam(name="code")String code,
-                           @RequestParam(name="state")String state,
-                           HttpServletRequest request){
+    public String callback(@RequestParam(name = "code") String code,
+                           @RequestParam(name = "state") String state,
+                           HttpServletRequest request,
+                           HttpServletResponse response) {
         
+        //没有cookie
+        int n = 3;//超时登录重复次数
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setCode(code);
         accessTokenDTO.setState(state);
         accessTokenDTO.setRedirect_uri(redirectUri);
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
-        String userToken = githubProvider.getAccessToken(accessTokenDTO);
-        GithubUser user = githubProvider.getUser(userToken);
-        System.out.println(user);
-        request.getSession().setAttribute("user", "user");
-        return "index";
+        String userToken;
+        GithubUser githubUser;
+        User user;
+        while (n > 0) {
+            //github登录
+            userToken = githubProvider.getAccessToken(accessTokenDTO);
+            githubUser = githubProvider.getUser(userToken);
+            if (githubUser != null && githubUser.getId() != null) {
+                //通过githubId检测是否存在
+                user = userService.checkUser(githubUser);
+                if (user == null || user.getId() == null) {
+                    //没用户，新建,创建cookie
+                    user = new User();
+                    user.setAccountId(githubUser.getId());
+                    user.setName(githubUser.getName());
+                    String token = UUID.randomUUID().toString();
+                    user.setToken(token);
+                    user.setGmtCreate(System.currentTimeMillis());
+                    user.setGmtModified(System.currentTimeMillis());
+                    if (userService.addUser(user) == 1) {
+                        //添加成功,写入cookie
+                        Cookie cookie = new Cookie("token", token);
+                        cookie.setMaxAge(3600 * 24 * 7);//7天cookie
+                        response.addCookie(cookie);
+                        request.getSession().setAttribute("user", user);
+                        break;
+                    }
+                } else {
+                    //有用户，写入session,更新信息
+                    User modifiedUser = new User();
+                    modifiedUser.setId(user.getId());//id
+                    modifiedUser.setGmtCreate(user.getGmtCreate());//createTime
+                    modifiedUser.setAccountId(user.getAccountId());//accountId
+                    
+                    //不同浏览器登录了，刷新token，过期token作废
+                    String token = UUID.randomUUID().toString();
+                    modifiedUser.setToken(token);//token
+                    modifiedUser.setGmtModified(System.currentTimeMillis());//修改时间
+                    modifiedUser.setName(githubUser.getName());//name,可能更新
+                    
+                    if (userService.UpdateUser(modifiedUser) == 1) {
+                        //修改成功
+                        request.getSession().setAttribute("user", modifiedUser);
+                        //添加成功,写入cookie
+                        Cookie cookie = new Cookie("token", token);
+                        cookie.setMaxAge(3600 * 24 * 7);
+                        response.addCookie(cookie);
+                        break;
+                    }
+                }
+            } else {
+                //登录失败
+                n--;//超时重复
+            }
+        }
+        return "redirect:index";
     }
     
     

@@ -7,14 +7,9 @@ package ren.aiernory.blog.dto;
  * @Description:
  */
 public class GithubUser {
-  private   String name;
-  private   Long id;
-  private   String bio;
-    
-    
-    public String getName() {
-        return name;
-    }
+    private String name;
+    private String id;
+    private String bio;
     
     @Override
     public String toString() {
@@ -25,15 +20,19 @@ public class GithubUser {
                 '}';
     }
     
+    public String getName() {
+        return name;
+    }
+    
     public void setName(String name) {
         this.name = name;
     }
     
-    public Long getId() {
+    public String getId() {
         return id;
     }
     
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
     
