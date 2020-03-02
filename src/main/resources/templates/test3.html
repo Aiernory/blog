@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link crossorigin="anonymous" href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="/plugins/editor.md-master/css/editormd.previewt.css" rel="stylesheet">
+    <link href="/plugins/editor.md-master/css/editormd.min.css" rel="stylesheet"/>
+    
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script crossorigin="anonymous" src="js/bootstrap.min.js"></script>
+    <script src="/plugins/editor.md-master/editormd.min.js"></script>
+    
+    
+    <script src="/js/APlayer.js"></script>
+    <link href="/css/APlayer.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="demo">
+        <p><strong>aplayer音乐播放器</strong></p>
+        <div class="aplayer" id="player1">
+        <pre class="aplayer-lrc-content">
+            </pre>
+        </div>
+    </div>
+    <script>
+        var ap = new APlayer
+        ({
+            element: document.getElementById('player1'),
+            narrow: false,
+            autoplay: true,
+            showlrc: true,
+            music: {
+                title: '遇见',
+                author: '孙燕姿',
+                //https://music.163.com/#/song?id=468176711
+                //https://m7.music.126.net/20200229022602/ee5eaea674e71cf87f85080373450add/ymusic/0bfe/142a/f8dd/dba327776596fa419e3c8fa6d4c4de43.mp3
+
+                //https://music.163.com/#/song?id=3935139
+                //https://m7.music.126.net/20200229023322/b5f69c079f7e589acb6385f4f79eb04c/ymusic/6b91/74b2/e19b/67a81c206add8c520d1e67944a301f6e.mp3
+
+                //
+                //
+                url: 'http://music.163.com/song/media/outer/url?id=1425818639.mp3',
+                pic: 'http://music.163.com/song/media/outer/url?id=27406244.jpg'
+            }
+        });
+        ap.init();
+    </script>
+</body>
+
+<!--
+//fuck
+网易音乐id变直连
+http://music.163.com/song/media/outer/url?id=【id】.mp3
+
+
+-->
+
+
+<!--
+酷狗
+歌名：眼泪
+歌曲
+https://webfs.yun.kugou.com/202002290243/9212a13ed677ad20fab4b810fd5d440d/G195/M03/1B/11/Aw4DAF5U-W-ACHqoADReXne-sNo727.mp3
+封面
+https://p3fx.kgimg.com/stdmusic/20200225/20200225183316286225.jpg
+酷狗加不上来
+
+
+
+qq音乐能力有限啊，id我都找不到
+只能网易音乐，到时候再加个本地音乐
+
+-->

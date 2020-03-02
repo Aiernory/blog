@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--搜索，"未完成"，完善页面-->
+<head>
+    <meta charset="UTF-8">
+    <title>发布</title>
+    <div th:include="index"></div>
+</head>
+<body>
+ 
+    <div class="row">
+        <!--左右各一格子留白-->
+        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+        
+        <!--问题面板-->
+        <div class="col-lg-8 col-md-10 col-sm-10 col-xs-10">
+            
+            
+            <!--浅绿色，标题-->
+            <div class="panel panel-success">
+                <div class="panel-body input-group ">
+                    <label class="input-group-addon" for="publishTitle">文章标题</label>
+                    <input class="form-control" id="publishTitle" placeholder="木得标题啊" type="text">
+                </div>
+            </div>
+            
+            <!--浅蓝色，音乐-->
+            <div class="panel panel-info">
+                <!--模态框-->
+    
+    
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#publishAddMusic">
+                    添加音乐
+                </button>
+    
+                <!-- Modal -->
+                <div class="modal fade" id="publishAddMusic" tabindex="-1" role="dialog" aria-labelledby="publishcAddMusicLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="publishcAddMusicLabel">添加音乐(能力有限，网络上的音乐只支持网易音乐，并且封面和歌词 TvT )</h4>
+                            </div>
+                            <div class="modal-body">
+                                ...
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+            </div>
+            
+            
+            <!--默认无色，内容-->
+            <h4 aria-hidden="true" class="glyphicon glyphicon-book" style="text-align: left"> 正文</h4>
+           
+            <div class="panel panel-default" id="out-of-layout">
+                <div th:include="editorPage :: editor-body"></div>
+            </div>
+            
+            <!--红色，资源连接功能，未完成-->
+            <div class="panel panel-danger">
+                资源连接...
+            </div>
+        
+        </div>
+        
+        <!--提示信息-->
+        <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10">
+        
+        </div>
+        <!--左右各一格子留白-->
+         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+    </div>
+    
+    
+ 
+  
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!-- 引入资源 -->
+
+<!--bootstrap.css-->
+<link crossorigin="anonymous" href="css/bootstrap.css" rel="stylesheet">
+<!--editorMd.css-->
+<link href="/plugins/editor.md-master/css/editormd.preview.css" rel="stylesheet">
+<link href="/plugins/editor.md-master/css/editormd.css" rel="stylesheet"/>
+<!--jquery.js-->
+<script src="/js/jquery-3.4.1.js"></script>
+<!--bootstrap.js-->
+<script crossorigin="anonymous" src="js/bootstrap.js"></script>
+<!--editorMd.js-->
+<script src="/plugins/editor.md-master/editormd.js"></script>
+
+
+
+
+<script src="/js/APlayer.js"></script>
+<link href="/css/APlayer.css" rel="stylesheet">
+
+<script src="/js/musicAdd.js"></script>
+
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#publishAddMusic">
+    添加音乐
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="publishAddMusic" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="publishAddMusicLabel">添加音乐(能力有限，网络上的音乐只支持网易音乐，并且没有封面和歌词 TvT )---我太菜了，歌曲名和歌手也没有 o(╥﹏╥)o )</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#addMusicNetease" aria-controls="addMusicNetease" role="tab" data-toggle="tab">网易音乐</a></li>
+                    <li role="presentation"><a href="#addMusicLocale" aria-controls="addMusicLocale" role="tab" data-toggle="tab">本地音乐</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="addMusicNetease">
+                        <textarea class="large-text code" placeholder="输入网易云音乐音乐id，只支持单曲……"
+                                style="width: 100%;resize: none; height: 25%"></textarea>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="addMusicLocale" style="width: 100%;resize: none; height: 25%">
+                    
+                            <button type="button" class="btn btn-info">你点了，我再去加载</button>
+                   
+                       
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">插入到文章</button>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+
+
+
