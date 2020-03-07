@@ -5,115 +5,156 @@
     <meta charset="UTF-8">
     <title>发布</title>
     <div th:include="index"></div>
+    <!--editorMd-->
+    <link href="/plugins/editor.md-master/css/editormd.preview.css" rel="stylesheet">
+    <link href="/plugins/editor.md-master/css/editormd.css" rel="stylesheet"/>
+    <script src="/plugins/editor.md-master/editormd.js"></script>
+    <script  src="/js/light.js"></script>
+    <!--others-->
+    <!--<script src="/js/APlayer.js"></script>-->
+    <!--<link href="/css/APlayer.css" rel="stylesheet">-->
+    <script src="/js/addmusic.js"></script>
 </head>
-<body>
- 
-    <div class="row">
+<body style="background-color: darkgrey">
+    
+    <div class="row" style="margin-left: 5%;margin-right: 5%;padding-top: 20px;
+        padding-bottom: 20px;background-color: whitesmoke">
         <!--左右各一格子留白-->
         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
         
         <!--问题面板-->
-        <div class="col-lg-8 col-md-10 col-sm-10 col-xs-10">
+        <div class="col-lg-6 col-md-8 col-sm-8 col-xs-8">
             
             
-            <!--浅绿色，标题-->
-            <div class="panel panel-success">
-                <div class="panel-body input-group ">
-                    <label class="input-group-addon" for="publishTitle">文章标题</label>
-                    <input class="form-control" id="publishTitle" placeholder="木得标题啊" type="text">
-                </div>
-            </div>
-            
-            <!--浅蓝色，音乐-->
-            <div class="panel panel-info">
-                <!--模态框-->
-    
-    
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#publishAddMusic">
-                    添加音乐
-                </button>
-    
-                <!-- Modal -->
-                <div class="modal fade" id="publishAddMusic" tabindex="-1" role="dialog" aria-labelledby="publishcAddMusicLabel">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="publishcAddMusicLabel">添加音乐(能力有限，网络上的音乐只支持网易音乐，并且封面和歌词 TvT )</h4>
-                            </div>
-                            <div class="modal-body">
-                                ...
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </div>
+            <!--尝试保存内容，现在要去看视频了-->
+            <form action="/publish" method="post">
+                
+                <!--浅绿色，标题-->
+                <div class="panel panel-success">
+                    <div class="panel-body input-group ">
+                        <label class="input-group-addon" for="publishTitle">文章标题</label>
+                        <input class="form-control" id="publishTitle" name="title" placeholder="木得标题啊" type="text">
                     </div>
                 </div>
                 
+                <!--浅蓝色，音乐-->
+                <div class="panel panel-info">
+                    
+                    <!--模态框--><!-- Button trigger modal -->
+                    <button class="btn btn-primary btn-lg" data-target="#publishAddMusic" data-toggle="modal"
+                            type="button">
+                        添加音乐
+                    </button>
+                    <!--<button class="btn btn-primary btn-lg" data-target="#publishUpMusic" data-toggle="modal"-->
+                    <!--        type="button">-->
+                    <!--    上传音乐-->
+                    <!--</button>-->
+                    <a tabindex="0"  id="musicUploadMsg" data-toggle="popover" data-placement="top" data-trigger="focus" data-content="">
+                        <button class="btn btn-primary btn-lg" data-target="#publishUpMusic" data-toggle="modal"
+                                type="button">
+                            上传音乐
+                        </button>
+                    </a>
+                    <!-- 上传音乐的Modal --><!--modal-title-->
+                    <div aria-labelledby="myModalLabel" class="modal fade bs-example-modal-sm" id="publishUpMusic" role="dialog"
+                            tabindex="-1">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">上传音乐</h4>
+                                </div>
                 
+                                <div class="modal-body">
+                                    服务器不大，不要上传太高品质的。。。。
+                                </div>
+                                <div class="modal-footer">
+                                    <input style="float: left" id="uploadMusic-file" accept="audio/*"  type="file">
+                                    <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+                                    <button id="uploadMusic-btn" data-dismiss="modal" class="btn btn-success" type="button" >上传</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 添加音乐的Modal --><!--modal-title-->
+                    <div aria-labelledby="myModalLabel" class="modal fade bs-example-modal-lg" id="publishAddMusic" role="dialog"
+                            tabindex="-1">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span
+                                            aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="publishAddMusicLabel">
+                                        添加音乐(能力有限，网络上的音乐只支持网易音乐，并且没有封面和歌词 TvT
+                                        )---我太菜了，歌曲名和歌手也没有 o(╥﹏╥)o )</h4>
+                                </div>
+                                <!--modal-modal-body-->
+                                <div class="modal-body">
+                                    <!-- Nav tabs -->
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="active" role="presentation"><a aria-controls="addMusicNetease"
+                                                data-toggle="tab" href="#addMusicNetease" role="tab">网易音乐</a></li>
+                                        <li role="presentation"><a aria-controls="addMusicLocale" data-toggle="tab"
+                                                href="#addMusicLocale" role="tab">本地音乐</a></li>
+                                    </ul>
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="addMusicNetease" role="tabpanel"
+                                                style="width: 100%; height:300px">
+                                                <textarea id="netease-music-info" class="large-text code" placeholder="输入网易云音乐音乐id，只支持单曲……"
+                                                        style="width: 100%;resize: none; height: 100%"></textarea>
+                                        </div>
+                                        <div class="tab-pane" id="addMusicLocale" role="tabpanel"
+                                                style="width: 100%; height:300px;overflow-y:scroll;">
+                                            <button  id="add-music-local-btn" class="btn btn-info" type="button">你点了，我再去加载</button>
+                                            <!--表格，展示文件名-->
+                                            <div class="btn-group btn-group-xs" role="group">
+                                                <table style="table-layout: fixed" class="table table-hover" id="add-music-local-table"></table>
+                                            </div>
+                                            
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button class="btn btn-default" data-dismiss="modal" type="button">关闭</button>
+                                    <button type="button" class="btn btn-default" id="add-music-btn" data-dismiss="modal">添加</button>
+                                    <input type="text"  hidden="hidden" name="music" id="add-music-input" placeholder="null">
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+   
+                </div>
                 
+                <!--默认无色，内容-->
+                <h4 aria-hidden="true" class="glyphicon glyphicon-book" style="text-align: left"> 正文</h4>
+                <div class="panel panel-default" id="out-of-layout">
+                    <div th:include="editorPage :: editor-body"></div>
+                </div>
                 
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-            </div>
+                <!--红色，资源连接功能，未完成-->
+                <div class="panel panel-danger">
+                    资源连接...
+                </div>
+                <input id="publish-submit" style="float: right" name="发表" class="btn btn-danger" type="submit" disabled/>
+             
+            </form>
             
-            
-            <!--默认无色，内容-->
-            <h4 aria-hidden="true" class="glyphicon glyphicon-book" style="text-align: left"> 正文</h4>
-           
-            <div class="panel panel-default" id="out-of-layout">
-                <div th:include="editorPage :: editor-body"></div>
-            </div>
-            
-            <!--红色，资源连接功能，未完成-->
-            <div class="panel panel-danger">
-                资源连接...
-            </div>
-        
         </div>
         
         <!--提示信息-->
-        <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10">
-        
-        </div>
+        <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10" style="background-color: silver"></div>
         <!--左右各一格子留白-->
-         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
     </div>
-    
-    
- 
-  
+
 
 </body>
 </html>
+
+
+

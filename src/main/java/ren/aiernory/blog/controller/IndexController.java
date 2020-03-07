@@ -1,12 +1,16 @@
 package ren.aiernory.blog.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 import ren.aiernory.blog.mapper.UserMapper;
 import ren.aiernory.blog.model.User;
+import ren.aiernory.blog.tool.CookieLogin;
 
 import javax.annotation.Resource;
+import javax.naming.Name;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,26 +24,17 @@ import javax.servlet.http.HttpServletRequest;
 public class IndexController {
     @Resource
     private UserMapper userMapper;
+    @Autowired
+    private CookieLogin cookieLogin;
+    //前端页面链接地址
+    @Value("${github.action.href}")
+    private String href;
     
     @GetMapping({"/index", "/"})
     ModelAndView index(ModelAndView model, HttpServletRequest request) {
         model.setViewName("index");
-        //验证cookie
-        Cookie[] cookies = request.getCookies();
-        User user;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    user = userMapper.selectByToken(token);
-                    if (user.getId() != null) {
-                        //cookie正确，直接登录
-                        request.getSession().setAttribute("user", user);
-                        break;
-                    }
-                }
-            }
-        }
+        request.getSession().setAttribute("githubHref",href);
+        cookieLogin.cookieVerify(request);
         return model;
     }
     

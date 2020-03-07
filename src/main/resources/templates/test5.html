@@ -1,71 +1,77 @@
-<!-- 引入资源 -->
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 
-<!--bootstrap.css-->
-<link crossorigin="anonymous" href="css/bootstrap.css" rel="stylesheet">
-<!--editorMd.css-->
-<link href="/plugins/editor.md-master/css/editormd.preview.css" rel="stylesheet">
-<link href="/plugins/editor.md-master/css/editormd.css" rel="stylesheet"/>
-<!--jquery.js-->
-<script src="/js/jquery-3.4.1.js"></script>
-<!--bootstrap.js-->
-<script crossorigin="anonymous" src="js/bootstrap.js"></script>
-<!--editorMd.js-->
-<script src="/plugins/editor.md-master/editormd.js"></script>
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <!-- 引入资源 -->
+    <!--bootstrap.css-->
+    <link crossorigin="anonymous" href="css/bootstrap.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="css/bootstrap-theme.css" rel="stylesheet">
+    <!--jquery.js-->
+    <script src="/js/jquery-3.3.1.js"></script>
+    <!--bootstrap.js-->
+    <script crossorigin="anonymous" src="js/bootstrap.js"></script>
+</head>
+<hr>
+<hr>
 
+<a tabindex="0"  id="musicUploadMsg" data-toggle="popover" data-placement="top" data-trigger="focus" data-content="">
+    <button class="btn btn-primary btn-lg" data-target="#publishUpMusic" data-toggle="modal"
+            type="button">
+        上传音乐
+    </button>
+</a>
 
-
-
-<script src="/js/APlayer.js"></script>
-<link href="/css/APlayer.css" rel="stylesheet">
-
-<script src="/js/musicAdd.js"></script>
-
-
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#publishAddMusic">
-    添加音乐
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="publishAddMusic" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<!-- 上传音乐的Modal --><!--modal-title-->
+<div aria-labelledby="myModalLabel" class="modal fade bs-example-modal-sm" id="publishUpMusic" role="dialog"
+        tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="publishAddMusicLabel">添加音乐(能力有限，网络上的音乐只支持网易音乐，并且没有封面和歌词 TvT )---我太菜了，歌曲名和歌手也没有 o(╥﹏╥)o )</h4>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">上传音乐</h4>
             </div>
-            <div class="modal-body">
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#addMusicNetease" aria-controls="addMusicNetease" role="tab" data-toggle="tab">网易音乐</a></li>
-                    <li role="presentation"><a href="#addMusicLocale" aria-controls="addMusicLocale" role="tab" data-toggle="tab">本地音乐</a></li>
-                </ul>
-                <!-- Tab panes -->
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="addMusicNetease">
-                        <textarea class="large-text code" placeholder="输入网易云音乐音乐id，只支持单曲……"
-                                style="width: 100%;resize: none; height: 25%"></textarea>
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="addMusicLocale" style="width: 100%;resize: none; height: 25%">
-                    
-                            <button type="button" class="btn btn-info">你点了，我再去加载</button>
-                   
-                       
-                    </div>
+          
+                <div class="modal-body">
+                    服务器不大，不要上传太高品质的。。。。
+                    <input id="uploadMusic-file" accept="audio/*"  type="file">
                 </div>
-            </div>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary">插入到文章</button>
-            </div>
-            
-            
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+                    <button id="uploadMusic-btn" data-dismiss="modal" class="btn btn-success" type="button" >上传</button>
+                </div>
         </div>
     </div>
 </div>
 
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover();
+        // $('[data-toggle="tooltip"]').tooltip()
+        $("#uploadMusic-btn").click(function () {
 
-
-
+            let formData = new FormData();
+            formData.append("music", $('#uploadMusic-file')[0].files[0]);
+            $.ajax({
+                url: '/publish/uploadMusic1',
+                dataType: 'json',
+                type: 'POST',
+                async: true,
+                data: formData,
+                processData: false, // 使数据不做处理
+                contentType: false, // 不要设置Content-Type请求头
+                success: function (data) {
+                    //弹出一个小框框，上传成功，然后自动消失
+                    $("#musicUploadMsg").attr("data-content","上传成功！，刷新页面就能在本地音乐中看到了。");
+                },
+                error: function (response) {
+                    //弹出一个小框框，上传成功，然后不消失
+                    $("#musicUploadMsg").attr("data-content","上传失败，原因-----");
+                }
+            });
+            //弹出一个不消失的，不占页面的
+            $("#musicUploadMsg").attr("data-content","正在上传...");
+        });
+    })
+</script>

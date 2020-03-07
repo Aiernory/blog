@@ -13,7 +13,7 @@ import java.io.IOException;
  * @author Aiernory
  * @className: ren.aiernory.blog.provider.GithubProvider
  * @date 2020/1/14 21:31
- * @Description:
+ * @Description: 提供github登录输的连接跳转服务
  */
 @Component//仅加入到bean中
 public class GithubProvider {
@@ -42,8 +42,8 @@ public class GithubProvider {
                 .build();
         try {
             String string = okHttpClient.newCall(request).execute().body().string();
-            GithubUser user = JSON.parseObject(string,GithubUser.class);
-            return user;
+            GithubUser githubUser = JSON.parseObject(string,GithubUser.class);
+            return githubUser;
         } catch (IOException e) {
             e.printStackTrace();
             return null;

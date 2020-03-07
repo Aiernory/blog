@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>blog</name>
     <description>blog</description>
+    <packaging>jar</packaging>
 
     <properties>
         <java.version>1.8</java.version>
@@ -41,7 +42,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-        <!--fastJson-->
+       
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
@@ -80,17 +81,25 @@
         </dependency>
         
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.1.21</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
-    
+        
+        <!--似乎没用上-->
         <!--前端页面。一键复制-->
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>github-com-zenorocha-clipboard-js</artifactId>
             <version>2.0.4</version>
         </dependency>
+        <!--连接池-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.21</version>
+        </dependency>
+       
+
     </dependencies>
 
     <build>

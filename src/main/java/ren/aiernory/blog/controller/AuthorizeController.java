@@ -66,8 +66,12 @@ public class AuthorizeController {
                 if (user == null || user.getId() == null) {
                     //没用户，新建,创建cookie
                     user = new User();
+                    //githubUser获取到的信息
                     user.setAccountId(githubUser.getId());
                     user.setName(githubUser.getName());
+                    user.setAvatarUrl(githubUser.getAvatarUrl());
+                    user.setBio(githubUser.getBio());
+                    //其他生成信息
                     String token = UUID.randomUUID().toString();
                     user.setToken(token);
                     user.setGmtCreate(System.currentTimeMillis());
@@ -81,14 +85,16 @@ public class AuthorizeController {
                         break;
                     }
                 } else {
-                    //有用户，写入session,更新信息
+                    //有用户，写入session,更新信息到和github上的一致
                     User modifiedUser = new User();
+                    
                     modifiedUser.setId(user.getId());//id
                     modifiedUser.setGmtCreate(user.getGmtCreate());//createTime
                     modifiedUser.setAccountId(user.getAccountId());//accountId
+                    modifiedUser.setBio(user.getBio());//bio
+                    modifiedUser.setAvatarUrl(user.getAvatarUrl());//头像
                     
-                    //不同浏览器登录了，刷新token，过期token作废
-                    String token = UUID.randomUUID().toString();
+                    String token = UUID.randomUUID().toString();//不同浏览器登录了，刷新token，过期token作废
                     modifiedUser.setToken(token);//token
                     modifiedUser.setGmtModified(System.currentTimeMillis());//修改时间
                     modifiedUser.setName(githubUser.getName());//name,可能更新

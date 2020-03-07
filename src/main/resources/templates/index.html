@@ -1,23 +1,9 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
-    <!-- 引入资源 -->
-    
-    <!--bootstrap.css-->
-    <link crossorigin="anonymous" href="css/bootstrap.css" rel="stylesheet">
-    <!--editorMd.css-->
-    <link href="/plugins/editor.md-master/css/editormd.preview.css" rel="stylesheet">
-    <link href="/plugins/editor.md-master/css/editormd.css" rel="stylesheet"/>
-    <!--jquery.js-->
-    <script src="/js/jquery-3.4.1.js"></script>
-    <!--bootstrap.js-->
-    <script crossorigin="anonymous" src="js/bootstrap.js"></script>
-    <!--editorMd.js-->
-    <script src="/plugins/editor.md-master/editormd.js"></script>
-    
+    <div th:include="header"></div>
 </head>
+
 <body>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -36,16 +22,19 @@
                     </div>
                     <button class="btn btn-default" type="submit">搜索</button>
                 </form>
+                <li >
+                    <a href="/publish">发表页(暂时加上的链接)</a>
+                </li>
                 
                 <ul class="nav navbar-nav navbar-right">
+                    
                     <li th:if="${session.user == null}">
-                        <a href="https://github.com/login/oauth/authorize?client_id=6048bdc02fbeeb28bdda&redirect_uri=http://localhost:80/callback&scope=user&state=1">登录</a>
+                        <a th:href="${session.githubHref}">登录</a>
                     </li>
                     
-                    
                     <li class="dropdown" th:unless="${session.user == null}">
-                        <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown" href="#"
-                                role="button" th:text="${session.user.id}">
+                        <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown"
+                                href="#" role="button" th:text="${session.user.name}">
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">消息中心</a></li>
