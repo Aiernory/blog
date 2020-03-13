@@ -1,12 +1,13 @@
 package ren.aiernory.blog.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ren.aiernory.blog.dto.PageHelper;
 import ren.aiernory.blog.mapper.PublishMapper;
 import ren.aiernory.blog.model.Publish;
 import ren.aiernory.blog.service.PublishService;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author Aiernory
@@ -19,7 +20,6 @@ public class PublishServiceImpl implements PublishService {
     @Resource
     private PublishMapper publishMapper;
     
-    
     @Override
     public int addPublish(Publish publish) {
         long gmtTime = System.currentTimeMillis();
@@ -28,4 +28,20 @@ public class PublishServiceImpl implements PublishService {
         
         return publishMapper.insertSelective(publish);
     }
+    
+    @Override
+    public PageHelper listPage(int page, int size) {
+        PageHelper pageHelper =new PageHelper();
+        pageHelper.setCurrentPage(page);
+        int totalCount = publishMapper.getTotalCount();
+        pageHelper.setPageList(totalCount,size,page);
+    
+        List<Publish> publishes = publishMapper.listAllWithUserByPage(page - 1, size);
+        pageHelper.setPublishes(publishes);
+        return pageHelper;
+    }
+    
+  
+    
+    
 }

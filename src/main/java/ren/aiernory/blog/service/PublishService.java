@@ -1,5 +1,6 @@
 package ren.aiernory.blog.service;
 
+import ren.aiernory.blog.dto.PageHelper;
 import ren.aiernory.blog.model.Publish;
 
 /**
@@ -10,4 +11,7 @@ import ren.aiernory.blog.model.Publish;
  */
 public interface PublishService {
     int addPublish(Publish publish);
+    
+    PageHelper listPage(int page, int size);
+    
 }

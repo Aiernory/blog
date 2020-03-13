@@ -2,6 +2,49 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ren.aiernory.blog.mapper.PublishMapper">
+    
+    <resultMap id="publishWithAuthor" type="ren.aiernory.blog.model.Publish">
+        <id column="id" property="id"/>
+        <result property="title" column="title"/>
+        <result property="descriptionCode" column="description_code"/>
+        <result property="descriptionDoc" column="description_doc"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="creator" column="creator"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="musicStatus" column="music_status"/>
+        <result property="musicContent" column="music_content"/>
+        <association property="author" javaType="ren.aiernory.blog.model.User" fetchType="lazy">
+            <id property="id" column="creator" />
+            <result property="name" column="name"/>
+            <result property="accountId" column="account_id"/>
+            <result property="token" column="token"/>
+            <result property="gmtCreate" column="gmt_create"/>
+            <result property="gmtModified" column="gmt_modified"/>
+            <result property="bio" column="bio"/>
+            <result property="avatarUrl" column="avatar_url"/>
+        </association>
+        
 
-
+    </resultMap>
+    
+    
+    <select id="listAllWithUserByPage" resultMap="publishWithAuthor" >
+        select p.*,u.*
+        from publish AS p,user AS u
+        where u.id=p.creator
+        limit #{page},#{size}
+    </select>
+    <select id="listAllWithUser" resultMap="publishWithAuthor">
+        select p.*,u.*
+        from publish AS p,user AS u
+        where u.id=p.creator
+    </select>
+    <select id="getTotalCount" resultType="Integer">
+        select count(1)
+        from publish
+    </select>
+    
 </mapper>

@@ -4,7 +4,7 @@ package ren.aiernory.blog.provider;
 import com.alibaba.fastjson.JSON;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
-import ren.aiernory.blog.dto.AccessTokenDTO;
+import ren.aiernory.blog.dto.AccessToken;
 import ren.aiernory.blog.dto.GithubUser;
 
 import java.io.IOException;
@@ -20,9 +20,9 @@ public class GithubProvider {
     
     OkHttpClient okHttpClient = new OkHttpClient();
     
-    public String getAccessToken(AccessTokenDTO accessTokenDTO) {
+    public String getAccessToken(AccessToken accessToken) {
         MediaType mediaType = MediaType.parse("application/json;charset=utf-8");
-        RequestBody body = RequestBody.create(mediaType,JSON.toJSONString(accessTokenDTO));
+        RequestBody body = RequestBody.create(mediaType,JSON.toJSONString(accessToken));
         Request request = new Request.Builder()
                 .url("https://github.com/login/oauth/access_token")
                 .post(body)

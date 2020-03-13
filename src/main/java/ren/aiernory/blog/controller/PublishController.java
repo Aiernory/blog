@@ -27,8 +27,7 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/publish")
 public class PublishController {
-    @Autowired
-    private CookieLogin cookieLogin;
+
     @Autowired
     private PublishService publishService;
     @Value("${localMusicPath}")
@@ -50,18 +49,8 @@ public class PublishController {
     ) {
         Publish publish = new Publish();
         User user = (User) request.getSession().getAttribute("user");
-        //登录检验
-        if (user == null) {
-            //检测cookie
-            cookieLogin.cookieVerify(request);
-            user = (User) request.getSession().getAttribute("user");
-        }
-        if (user == null) {
-            model.addAttribute("error", "用户未登录!");
-            return "publish";
-        }
         //music解析处理  0没有 1网易云 2本地
-        if (music != null) {
+        if (music != null && music.length()!=0) {
             String[] musicMsg = music.split("&");
             String type = musicMsg[0].split("=")[1];
             String musicId = musicMsg[1].split("=")[1];
@@ -70,9 +59,10 @@ public class PublishController {
                 publish.setMusicStatus(2);
             } else if ("netease".equals(type)) {
                 publish.setMusicStatus(1);
-            } else {
-                publish.setMusicStatus(0);//这个错误如果出了默默吞掉
             }
+        }else {
+            publish.setMusicContent("");
+            publish.setMusicStatus(0);
         }
         //有默认值，空就不管了
         publish.setTitle(title);

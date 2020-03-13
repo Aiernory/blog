@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ren.aiernory.blog.dto.AccessTokenDTO;
+import ren.aiernory.blog.dto.AccessToken;
 import ren.aiernory.blog.dto.GithubUser;
 import ren.aiernory.blog.model.User;
 import ren.aiernory.blog.provider.GithubProvider;
@@ -47,18 +47,18 @@ public class AuthorizeController {
         
         //没有cookie
         int n = 3;//超时登录重复次数
-        AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
-        accessTokenDTO.setCode(code);
-        accessTokenDTO.setState(state);
-        accessTokenDTO.setRedirect_uri(redirectUri);
-        accessTokenDTO.setClient_id(clientId);
-        accessTokenDTO.setClient_secret(clientSecret);
+        AccessToken accessToken = new AccessToken();
+        accessToken.setCode(code);
+        accessToken.setState(state);
+        accessToken.setRedirect_uri(redirectUri);
+        accessToken.setClient_id(clientId);
+        accessToken.setClient_secret(clientSecret);
         String userToken;
         GithubUser githubUser;
         User user;
         while (n > 0) {
             //github登录
-            userToken = githubProvider.getAccessToken(accessTokenDTO);
+            userToken = githubProvider.getAccessToken(accessToken);
             githubUser = githubProvider.getUser(userToken);
             if (githubUser != null && githubUser.getId() != null) {
                 //通过githubId检测是否存在

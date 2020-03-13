@@ -29,6 +29,7 @@ public class Publish {
     private Integer commentCount;
     private Integer musicStatus;
     private String musicContent;
-    
+    @Transient
+    private User author;
    
 }

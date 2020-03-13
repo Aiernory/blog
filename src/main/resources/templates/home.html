@@ -2,37 +2,80 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <div th:include="index"></div>
+    <script src="/js/homePage.js"></script>
+
 </head>
 
 <body style="background-color: darkgrey">
+    
     <div class="row" style="margin-left: 5%;margin-right: 5%;padding-top: 20px;
         padding-bottom: 20px;background-color: whitesmoke">
-        <!--展示面板-->
+        <!--左右各一格子留白-->
+        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+        
+        <!--问题面板-->
         <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12">
             
             
+            <!--列表-->
+            <ul th:each="article:${pageHelper.publishes}" th:if="${not #lists.isEmpty(pageHelper.publishes)}">
+                <div class="media" style="height: 100px">
+                    <div class="media-left">
+                        <p>
+                            <a href="#">
+                                <img alt="查看作者专栏" class="img-circle" style="width: 60px;height: 60px"
+                                        th:src="${article.author.avatarUrl}">
+                            </a>
+                        </p>
+                        <p>
+                            <a href="#" style="font-size: 14px;color: #0095dd;" th:text="${article.author.name}"/>
+                        </p>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading" th:text="${article.title}"></h4>
+                        <div th:utext="${article.descriptionDoc}"/>
+                        <span style="font-size: 14px;font-weight: normal;color: #999999"
+                                th:text="'创建时间'+${#dates.format(article.gmtCreate,'yy/MM/dd HH:mm')}+'··最新回复时间'+${#dates.format(article.gmtModified,'yy/MM/dd HH:mm')}+'··'+${article.viewCount}+'次查看··'+${article.commentCount}+'条回复··'+${article.likeCount}+'个赞'"/>
+                    </div>
+                </div>
+            </ul>
             
-            <div class="media">
-                <div class="media-left">
-                    <a href="#">
-                        <img alt="..." class="media-object" src="../static/images/spinner.gif">
-                    </a>
-                </div>
-                <div class="media-body">
-                    <h4 class="media-heading">Media heading</h4>
-                    asdvgbhnjsadvgbhnj
-                </div>
-            </div>
+            <!--分页-->
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="change-page">
+                    <!--位置变来变去不好，变为 disabled-->
+                    <!--首页和前页，隐藏占位-->
+                    <li th:class="${pageHelper.showFirstPage}?'':'hideden-placehode'">
+                        <a href="/home?page=1&size=7"><<</a>
+                    </li>
+                    <li th:class="${pageHelper.showPrevious}?'':'hideden-placehode'">
+                        <a th:href="'/home?page='+(${pageHelper.currentPage}-1)+'&size=7'"><</a>
+                    </li>
+                    <!--5个页码-->
+                    <li th:class="${pageHelper.currentPage==page}?'active':''" th:each="page:${pageHelper.pageList}"
+                            th:if="${not #lists.isEmpty(pageHelper.pageList)}">
+                        <a th:href="'/home?page='+${page}+'&size=7'" th:text="${page}"></a>
+                    </li>
+                    <!--下页和尾页,直接不存在-->
+                    <li th:if="${pageHelper.showNext}"><a
+                            th:href="'/home?page='+(${pageHelper.currentPage}+1)+'&size=7'">></a></li>
+                    <li th:if="${pageHelper.showEndPage}"><a
+                            th:href="'/home?page='+${pageHelper.maxPage}+'&size=7'">>></a>
+                    </li>
+                </ul>
+            </nav>
+            <script>
+                <!--当前页添加class active-->
+                $(".hideden-placehode").attr("style", "visibility:hidden")
+            </script>
         
-            
-            
         </div>
-        <!--中间一格子留白-->
-        <div class="col-lg-1 col-md-1 col-sm-0 col-xs-0"></div>
         <!--提示信息-->
-        <div class="col-lg-3 col-md-11 col-sm-12 col-xs-12" style="background-color: gold"></div>
-      
+        <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10" style="background-color: silver">其他面板</div>
+        <!--左右各一格子留白-->
+        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
     </div>
 
 
 </body>
+

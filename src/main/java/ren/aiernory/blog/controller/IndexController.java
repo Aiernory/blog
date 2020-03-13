@@ -24,18 +24,13 @@ import javax.servlet.http.HttpServletRequest;
 public class IndexController {
     @Resource
     private UserMapper userMapper;
-    @Autowired
-    private CookieLogin cookieLogin;
-    //前端页面链接地址
-    @Value("${github.action.href}")
-    private String href;
+
     
     @GetMapping({"/index", "/"})
-    ModelAndView index(ModelAndView model, HttpServletRequest request) {
-        model.setViewName("index");
-        request.getSession().setAttribute("githubHref",href);
-        cookieLogin.cookieVerify(request);
-        return model;
+    String index(ModelAndView model, HttpServletRequest request) {
+
+       
+        return "index";
     }
     
     

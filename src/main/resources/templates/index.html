@@ -13,7 +13,7 @@
                         data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
                     <span class="sr-only">个人博客</span>
                 </button>
-                <a class="navbar-brand" href="#">个人博客</a>
+                <a class="navbar-brand" href="/home">个人博客</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <form class="navbar-form navbar-left">
@@ -22,12 +22,13 @@
                     </div>
                     <button class="btn btn-default" type="submit">搜索</button>
                 </form>
-                <li >
-                    <a href="/publish">发表页(暂时加上的链接)</a>
-                </li>
+                
                 
                 <ul class="nav navbar-nav navbar-right">
-                    
+    
+                    <li th:if="${session.user != null}">
+                        <a href="/publish">发表</a>
+                    </li>
                     <li th:if="${session.user == null}">
                         <a th:href="${session.githubHref}">登录</a>
                     </li>
