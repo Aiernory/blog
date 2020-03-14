@@ -27,13 +27,14 @@ public class PageHelper {
     private Boolean showEndPage;
     
     private Integer maxPage;
+    private Integer size;
     private Integer currentPage;
     
     private List<Publish> publishes;
     private List<Integer> pageList;
 
     
-    public void setPageList(int totalCount, int size, int page) {
+    public void setPageList(int totalCount) {
       
         maxPage = (int) Math.ceil((double) totalCount / size);
         int begin = 1;

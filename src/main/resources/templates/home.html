@@ -7,16 +7,15 @@
 </head>
 
 <body style="background-color: darkgrey">
-    
+
     <div class="row" style="margin-left: 5%;margin-right: 5%;padding-top: 20px;
         padding-bottom: 20px;background-color: whitesmoke">
         <!--左右各一格子留白-->
         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
-        
+
         <!--问题面板-->
         <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12">
-            
-            
+
             <!--列表-->
             <ul th:each="article:${pageHelper.publishes}" th:if="${not #lists.isEmpty(pageHelper.publishes)}">
                 <div class="media" style="height: 100px">
@@ -39,36 +38,51 @@
                     </div>
                 </div>
             </ul>
-            
             <!--分页-->
             <nav aria-label="Page navigation">
-                <ul class="pagination" id="change-page">
-                    <!--位置变来变去不好，变为 disabled-->
+                <!--页标-->
+                <ul class="pagination" id="change-page" style="float: left;margin-left: 20px;margin-right: 20px;">
+                    <!--位置变来变去不好-->
                     <!--首页和前页，隐藏占位-->
                     <li th:class="${pageHelper.showFirstPage}?'':'hideden-placehode'">
-                        <a href="/home?page=1&size=7"><<</a>
+                        <a th:href="'/home?page=1&size='+${pageHelper.size}">&laquo;</a>
                     </li>
                     <li th:class="${pageHelper.showPrevious}?'':'hideden-placehode'">
-                        <a th:href="'/home?page='+(${pageHelper.currentPage}-1)+'&size=7'"><</a>
+                        <a th:href="'/home?page='+(${pageHelper.currentPage}-1)+'&size='+${pageHelper.size}">&lt;</a>
                     </li>
                     <!--5个页码-->
                     <li th:class="${pageHelper.currentPage==page}?'active':''" th:each="page:${pageHelper.pageList}"
                             th:if="${not #lists.isEmpty(pageHelper.pageList)}">
-                        <a th:href="'/home?page='+${page}+'&size=7'" th:text="${page}"></a>
+                        <a th:href="'/home?page='+${page}+'&size='+${pageHelper.size}" th:text="${page}"></a>
                     </li>
-                    <!--下页和尾页,直接不存在-->
-                    <li th:if="${pageHelper.showNext}"><a
-                            th:href="'/home?page='+(${pageHelper.currentPage}+1)+'&size=7'">></a></li>
-                    <li th:if="${pageHelper.showEndPage}"><a
-                            th:href="'/home?page='+${pageHelper.maxPage}+'&size=7'">>></a>
+                    <!--下页和尾页,隐藏占位-->
+                    <li th:class="${pageHelper.showNext}?'':'hideden-placehode'"><a
+                            th:href="'/home?page='+(${pageHelper.currentPage}+1)+'&size='+${pageHelper.size}">&gt;</a>
+                    </li>
+                    <li th:class="${pageHelper.showEndPage}?'':'hideden-placehode'"><a
+                            th:href="'/home?page='+${pageHelper.maxPage}+'&size='+${pageHelper.size}">&raquo;</a>
                     </li>
                 </ul>
+                <!--跳页-->
+                <ul class="pagination" style="float: left;margin-left: 20px;margin-right: 20px;">
+                    <form action="/home" class="form-inline" method="get">
+                        <input class="form-control" name="page" style="width: 76px;"
+                                th:placeholder="'共'+${pageHelper.maxPage}+'页'" type="number">
+                        <input hidden="hidden" name="size" th:value="${pageHelper.size}"/>
+                        <input class="btn btn-primary" type="submit" value="跳页"></input>
+                    </form>
+                </ul>
+                <!--设定页大小-->
+                <ul class="pagination" style="float: left;margin-left: 20px;margin-right: 20px;">
+                    <form action="/home" class="form-inline" method="get">
+                        <label>每页</label>
+                        <input class="form-control" name="size" style="width: 66px;" th:placeholder="${pageHelper.size}"
+                                type="number">
+                        <label>条</label>
+                        <input class="btn btn-primary" type="submit" value="设定"></input>
+                    </form>
+                </ul>
             </nav>
-            <script>
-                <!--当前页添加class active-->
-                $(".hideden-placehode").attr("style", "visibility:hidden")
-            </script>
-        
         </div>
         <!--提示信息-->
         <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10" style="background-color: silver">其他面板</div>

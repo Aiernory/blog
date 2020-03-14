@@ -33,8 +33,9 @@ public class PublishServiceImpl implements PublishService {
     public PageHelper listPage(int page, int size) {
         PageHelper pageHelper =new PageHelper();
         pageHelper.setCurrentPage(page);
+        pageHelper.setSize(size);
         int totalCount = publishMapper.getTotalCount();
-        pageHelper.setPageList(totalCount,size,page);
+        pageHelper.setPageList(totalCount);
     
         List<Publish> publishes = publishMapper.listAllWithUserByPage(page - 1, size);
         pageHelper.setPublishes(publishes);

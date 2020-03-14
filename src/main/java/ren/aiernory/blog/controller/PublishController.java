@@ -1,6 +1,5 @@
 package ren.aiernory.blog.controller;
 
-import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -11,10 +10,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import ren.aiernory.blog.model.Publish;
 import ren.aiernory.blog.model.User;
 import ren.aiernory.blog.service.PublishService;
-import ren.aiernory.blog.tool.CookieLogin;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 
@@ -27,7 +24,7 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/publish")
 public class PublishController {
-
+    
     @Autowired
     private PublishService publishService;
     @Value("${localMusicPath}")
@@ -50,7 +47,7 @@ public class PublishController {
         Publish publish = new Publish();
         User user = (User) request.getSession().getAttribute("user");
         //music解析处理  0没有 1网易云 2本地
-        if (music != null && music.length()!=0) {
+        if (music != null && music.length() != 0) {
             String[] musicMsg = music.split("&");
             String type = musicMsg[0].split("=")[1];
             String musicId = musicMsg[1].split("=")[1];
@@ -60,7 +57,7 @@ public class PublishController {
             } else if ("netease".equals(type)) {
                 publish.setMusicStatus(1);
             }
-        }else {
+        } else {
             publish.setMusicContent("");
             publish.setMusicStatus(0);
         }
@@ -95,7 +92,7 @@ public class PublishController {
             return "上传失败，文件内容为空...";
         }
         String fileName = file.getOriginalFilename();
-        File dest = new File(path , fileName);
+        File dest = new File(path, fileName);
         try {
             file.transferTo(dest);
             return "上传成功";
