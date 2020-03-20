@@ -26,25 +26,45 @@
             <result property="bio" column="bio"/>
             <result property="avatarUrl" column="avatar_url"/>
         </association>
-        
-
     </resultMap>
     
     
+    <!--全部，不分页，没实际用上-->
+    <select id="listAllWithUser" resultMap="publishWithAuthor">
+        select p.*,u.*
+        from publish AS p,user AS u
+        where u.id=p.creator
+    </select>
+    <!--全部文章分页-->
     <select id="listAllWithUserByPage" resultMap="publishWithAuthor" >
         select p.*,u.*
         from publish AS p,user AS u
         where u.id=p.creator
         limit #{page},#{size}
     </select>
-    <select id="listAllWithUser" resultMap="publishWithAuthor">
-        select p.*,u.*
-        from publish AS p,user AS u
-        where u.id=p.creator
-    </select>
+    <!--总数-->
     <select id="getTotalCount" resultType="Integer">
         select count(1)
         from publish
     </select>
+    <!--用户文章分页-->
+    <select id="listByCreatorWithUserByPage" resultMap="publishWithAuthor">
+        select p.*,u.*
+        from publish AS p,user AS u
+        where u.id=#{user.id} and u.id=p.creator
+        limit #{page},#{size}
+    </select>
+    <!--用户的文章数-->
+    <select id="getTotalCountByCreator" resultType="Integer">
+        select count(1)
+        from publish
+        where creator=#{user.id}
+    </select>
     
+    <!--结果带上user-->
+    <select id="selectById" resultType="Integer" resultMap="publishWithAuthor">
+        select *
+        from publish
+        where id=#{id}
+    </select>
 </mapper>

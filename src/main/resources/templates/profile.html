@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${session.user.name}+'的专栏'"></title>
+    <!-- 引入资源 -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/js/jquery-3.4.1.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/homePage.js"></script>
+</head>
+
+
+<div th:replace="~{header::headerBar}"></div>
+<body style="background-color: darkgrey">
+    
+    <div class="row" style="margin-left: 5%;margin-right: 5%;padding-top: 20px;
+        padding-bottom: 20px;background-color: whitesmoke">
+        <!--左右各一格子留白-->
+        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+        
+        <!--主面板-->
+        <!--article列表-->
+        <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12" th:if="${section=='article'}">
+            <h2><span th:text="${sectionName}"></span></h2>
+            <div th:if="${not #lists.isEmpty(pageHelper.publishes)}">
+                <!--列表-->
+                <ul th:each="article:${pageHelper.publishes}" >
+                    <div style="height: 55px;margin: 5px 0;padding: 5px;border: 1px solid #eee;border-radius: 3px;
+                border-left-width: 5px; border-left-color: #1b809e;
+                border-top-width: 2px; border-top-color: #66e9ff;
+                border-bottom-width: 1px; border-bottom-color: #0e364a;">
+                        <div class="media-body">
+                            <h4 class="media-heading"><a th:href="'/article/'+${article.id}" th:text="${article.title}"/></h4>
+                            <!--统计信息-->
+                            <span style="font-size: 14px;font-weight: normal;color: #999999"
+                                    th:text="'创建时间'+${#dates.format(article.gmtCreate,'yy/MM/dd HH:mm')}
+                                +' | 最新回复'+${#dates.format(article.gmtModified,'yy/MM/dd HH:mm')}
+                                +' | '+${article.viewCount}
+                                +'次查看 | '+${article.commentCount}
+                                +'条回复 | '+${article.likeCount}+'个赞'"/>
+                        </div>
+                    </div>
+                </ul>
+                <!--分页-->
+                <nav aria-label="Page navigation" >
+                    <!--页标-->
+                    <ul class="pagination" id="change-page" style="float: left;margin-left: 20px;margin-right: 20px;">
+                        <!--位置变来变去不好-->
+                        <!--首页和前页，隐藏占位-->
+                        <li th:class="${pageHelper.showFirstPage}?'':'hideden-placehode'">
+                            <a th:href="'/profile/article?page=1'">&laquo;</a>
+                        </li>
+                        <li th:class="${pageHelper.showPrevious}?'':'hideden-placehode'">
+                            <a th:href="'/profile/article?page='+(${pageHelper.currentPage}-1)">&lt;</a>
+                        </li>
+                        <!--5个页码-->
+                        <li th:class="${pageHelper.currentPage==page}?'active':''" th:each="page:${pageHelper.pageList}"
+                                th:if="${not #lists.isEmpty(pageHelper.pageList)}">
+                            <a th:href="'/profile/article?page='+${page}"
+                                    th:text="${page}"></a>
+                        </li>
+                        <!--下页和尾页,隐藏占位-->
+                        <li th:class="${pageHelper.showNext}?'':'hideden-placehode'"><a
+                                th:href="'/profile/article?page='+(${pageHelper.currentPage}+1)">&gt;</a>
+                        </li>
+                        <li th:class="${pageHelper.showEndPage}?'':'hideden-placehode'"><a
+                                th:href="'/profile/article?page='+${pageHelper.maxPage}">&raquo;</a>
+                        </li>
+                    </ul>
+                    <!--跳页-->
+                    <ul class="pagination" style="float: left;margin-left: 20px;margin-right: 20px;">
+                        <form action="/profile/article" class="form-inline" method="get">
+                            <input class="form-control" name="page" style="width: 90px;padding-left: 6px;"
+                                    th:placeholder="'共'+${pageHelper.maxPage}+'页'" type="number">
+                            <input hidden="hidden" name="size" th:value="${pageHelper.size}"/>
+                            <input class="btn btn-primary" type="submit" value="跳页"></input>
+                        </form>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!--message列表-->
+        <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12" th:if="${section=='message'}">
+            <h2><span th:text="${sectionName}"></span></h2>
+        </div>
+        <!--reply列表-->
+        <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12" th:if="${section=='reply'}">
+            <h2><span th:text="${sectionName}"></span></h2>
+        </div>
+        <!--副面板-->
+        <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10" style="background-color: silver">
+            <div class="list-group">
+                <a class="list-group-item" href="/profile/article"
+                        th:classappend="${sectionName=='article'}?'active':''">
+                    <span class="badge">14</span>
+                    我的问题
+                </a>
+                <a class="list-group-item" href="/profile/reply" th:classappend="${sectionName=='reply'}?'active':''">
+                    <span class="badge">14</span>
+                    最新回复
+                </a>
+                <a class="list-group-item" href="/profile/message"
+                        th:classappend="${sectionName=='message'}?'active':''">
+                    <span class="badge">14</span>
+                    消息中心
+                </a>
+                <a class="list-group-item" href="/profile/nothing"
+                        th:classappend="${sectionName=='article'}?'active':''">
+                    <span class="badge">14</span>
+                    NOTHING
+                </a>
+            </div>
+        </div>
+        <!--左右各一格子留白-->
+        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+    </div>
+
+
+</body>

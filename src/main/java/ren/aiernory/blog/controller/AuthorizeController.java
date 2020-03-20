@@ -1,19 +1,23 @@
 package ren.aiernory.blog.controller;
 
+import com.mysql.cj.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import ren.aiernory.blog.dto.AccessToken;
 import ren.aiernory.blog.dto.GithubUser;
 import ren.aiernory.blog.model.User;
 import ren.aiernory.blog.provider.GithubProvider;
 import ren.aiernory.blog.service.UserService;
+import ren.aiernory.blog.tool.CookieLogin;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -44,7 +48,6 @@ public class AuthorizeController {
                            @RequestParam(name = "state") String state,
                            HttpServletRequest request,
                            HttpServletResponse response) {
-        
         //没有cookie
         int n = 3;//超时登录重复次数
         AccessToken accessToken = new AccessToken();
@@ -118,4 +121,48 @@ public class AuthorizeController {
     }
     
     
+
+    //A浏览器登录中，B浏览器登录；A的cookie已经作废，A退出登录不再更新cookie
+    //弹出一个小框，确定退出，一个选择，删除cookie（不自动登录）。
+    @PostMapping("/logout")
+    public String logout(@RequestParam(name = "delCookie",defaultValue = "off")String delCookie,
+            HttpServletRequest request,
+                          HttpServletResponse response){
+        //退出登录状态
+        HttpSession session = request.getSession();
+        session.setAttribute("user", null);
+        //cookie删除
+        if("on".equals(delCookie)){
+            Cookie cookie =new Cookie("token","");
+            response.addCookie(cookie);
+        }
+        //把tcp链接关闭
+        
+        return "redirect:home";
+    }
+    
+    
+    
+    @Autowired
+    private CookieLogin cookieLogin;
+    //前端页面链接地址
+    @Value("${github.action.href}")
+    private String GithubLoginHref;
+    
+  
+    @GetMapping("/login")
+    public String loginByCookie(HttpServletRequest request ,Model model,
+                                HttpServletResponse response){
+        //点一下登录，检测cookie，如果没有正确信息，跳转git授权链接
+        //用Ajax
+        //登录，cookie检测
+        HttpSession session = request.getSession();
+        cookieLogin.cookieVerify(request);
+        if(session.getAttribute("user")==null){
+            //访问github登录链接
+            return "redirect:"+GithubLoginHref;
+        }
+        String referer = request.getHeader("referer");
+        return "redirect:"+referer;
+    }
 }

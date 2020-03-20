@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${article.title}"></title>
+    <!-- 引入资源 -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/js/jquery-3.4.1.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <!--其他-->
+    <script src="/js/homePage.js"></script>
+    <script src="/js/APlayer.js"></script>
+    <link href="/css/APlayer.css" rel="stylesheet">
+</head>
+
+
+<div th:replace="~{header::headerBar}"></div>
+<body style="background-color: darkgrey">
+    
+    <div class="row" style="margin-left: 5%;margin-right: 5%;padding-top: 20px;
+        padding-bottom: 20px;background-color: whitesmoke">
+        <!--左右各一格子留白-->
+        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+        
+        <!--主面板-->
+        <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12">
+            <h3 th:text="${article.title}"/>
+            <hr/>
+            <!--编辑按钮-->
+            <span>
+                   <a th:href="'/publish/edit/'+${article.id}"
+                           th:if="${session.user!=null && session.user.id==article.creator}"><span aria-hidden="true"
+                           class="glyphicon glyphicon-pencil"/>编辑</a>
+            </span>
+         <span >
+             阅读数等等信息
+         </span>
+            <!--音乐占位栏-->
+            <div class="demo" th:if="${article.musicStatus!=0}">
+                <p><strong>aplayer音乐播放器</strong></p>
+                <div class="aplayer" id="player1">
+                    <pre class="aplayer-lrc-content">
+                    </pre>
+                </div>
+                <div hidden="hidden" id="Aplayer-music-msg"
+                        th:text="${article.musicStatus}+'/*-'+${article.musicContent}+'/*-'+${musicPath}"/>
+            </div>
+            <!--md显示栏-->
+            <div th:text="${article.descriptionDoc}">
+            晚点，直接跟着小匠渲染吧。。。。。。
+            </div>
+        </div>
+        <script>
+            let music_msg = $("#Aplayer-music-msg").html();
+            let musciUrl;
+            let split = music_msg.split("/*-");
+            if (split[0] == "1") {
+                musciUrl = "http://music.163.com/song/media/outer/url?id=" + split[1] + ".mp3";
+            } else if (split[0] == "2") {
+                musciUrl = split[2] + split[1];
+            }
+            let ap = new APlayer
+            ({
+                element: document.getElementById('player1'),
+                narrow: true,
+                autoplay: false,
+                music: {
+                    url: musciUrl,
+                }
+            });
+            ap.init();
+        </script>
+        <!--副面板-->
+        <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10" style="background-color: silver">
+        
+        </div>
+        <!--左右各一格子留白-->
+        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+    </div>
+
+
+</body>

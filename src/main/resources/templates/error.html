@@ -1,10 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <!-- 引入资源 -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/js/jquery-3.4.1.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/homePage.js"></script>
 </head>
+<div th:replace="~{header::headerBar}"></div>
 <body>
-        别瞎输入！！！
+    <div style="text-align: center" class="jumbotron">
+        <h1 th:text="${status}">访问不到服务器</h1>
+        <p th:text="${message}">问就是服务器崩溃。</p>
+        <p><a class="btn btn-primary btn-lg" href="/home" role="button">转到主页</a></p>
+    </div>
 </body>
-</html>

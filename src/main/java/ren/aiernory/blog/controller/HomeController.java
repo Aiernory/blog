@@ -16,13 +16,13 @@ import ren.aiernory.blog.service.PublishService;
  * @Description:
  */
 @Controller
-@RequestMapping("/home")
+
 public class HomeController {
     @Autowired
     private PublishService publishService;
     
     
-    @GetMapping
+    @GetMapping({"/home","/","/index"})
     public ModelAndView changePage(ModelAndView modelAndView,
                                    @RequestParam(name = "page", defaultValue = "1") Integer page,
                                    @RequestParam(name = "size", defaultValue = "7") Integer size) {
@@ -40,18 +40,4 @@ public class HomeController {
         
         return modelAndView;
     }
-    
-    //@PostMapping("/setSize")
-    //public Model setPageSize( @RequestParam(name = "size", defaultValue = "7") Integer size,Model model){
-    //    //modelAndView每次都是新的，不能通过这个设置。也不想将页数写进数据库。大量数据不存session。加用cookie用thymeleaf也不方便。新定义pageHelper列表就空了。。
-    //    PageHelper pageHelper = (PageHelper) model.getAttribute("pageHelper");
-    //
-    //    if(size<1){
-    //        size=1;
-    //    }
-    //    pageHelper.setSize(size);
-    //    model.addAttribute("pageHelper", pageHelper);
-    //    return model;
-    //}
-    //
 }

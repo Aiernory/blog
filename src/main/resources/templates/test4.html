@@ -1,32 +1,31 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+<!-- 引入资源 -->
+<link href="/css/bootstrap.css" rel="stylesheet">
+<script src="/js/jquery-3.4.1.js"></script>
+<script src="/js/bootstrap.js"></script>
 
-<head>
-    <div th:include="header"></div>
-</head>
 
+//a标签的模态框
+<a data-target="#logoutModal" data-toggle="modal">Small modal</a>
 
-
-<input type="file" accept=".jpg" id="upFile">
-<button id="upload">上传</button>
-
-<script>
-    $('#upload').click(function () {
-
-        var theFile = $('#upFile')[0].files[0];
-        var formData = new FormData();
-        formData.append("theFile",theFile);
-
-        $.ajax({
-            url:'/publish/upload',
-            dataType:'json',
-            type:'POST',
-            async: false,
-            data: formData,
-            processData : false, // 使数据不做处理
-            contentType : false, // 不要设置Content-Type请求头
-            success: function(data){},
-            error:function(response){}
-        });
-    })
-</script>
+<div aria-labelledby="mySmallModalLabel" class="modal fade bs-example-modal-sm" id="logoutModal" role="dialog"
+        tabindex="-1">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <form action="/logout" method="post">
+                <div class="modal-header">
+                    <h4 class="modal-title">确定退出？</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="checkbox" checked name="delCookie" >取消自动登录
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+                    <input class="btn btn-info active" type="submit" value="退出登录">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

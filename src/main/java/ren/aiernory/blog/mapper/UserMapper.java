@@ -1,11 +1,7 @@
 package ren.aiernory.blog.mapper;
 
-import org.springframework.stereotype.Repository;
-import ren.aiernory.blog.dto.GithubUser;
 import ren.aiernory.blog.model.User;
 import tk.mybatis.mapper.common.Mapper;
-
-import javax.persistence.Table;
 
 /**
  * @author Aiernory

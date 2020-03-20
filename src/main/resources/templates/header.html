@@ -2,10 +2,78 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
 <!-- 引入资源 -->
-<!--bootstrap.css-->
-<link crossorigin="anonymous" href="css/bootstrap.css" rel="stylesheet">
-<!--jquery.js-->
+<link href="/css/bootstrap.css" rel="stylesheet">
 <script src="/js/jquery-3.4.1.js"></script>
-<!--bootstrap.js-->
-<script crossorigin="anonymous" src="js/bootstrap.js"></script>
+<script src="/js/bootstrap.js"></script>
+
+
+<nav class="navbar navbar-default" th:fragment="headerBar">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button aria-expanded="false" class="navbar-toggle collapsed" data-target="#bs-example-navbar-collapse-1"
+                    data-toggle="collapse" type="button">
+                <span class="sr-only">top固定栏</span>
+            </button>
+            <a class="navbar-brand" href="/home">主页</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input class="form-control" placeholder="搜索话题" type="text">
+                </div>
+                <button class="btn btn-default" type="submit">搜索</button>
+            </form>
+            
+            
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li th:if="${session.user != null}">
+                    
+                    <a href="/publish"><span aria-hidden="true" class="glyphicon glyphicon-pencil"></span>发表</a>
+                </li>
+                <li th:if="${session.user == null}">
+                    <a href="/login">登录</a>
+                </li>
+                
+                <li class="dropdown" th:if="${session.user != null}">
+                    <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown"
+                            href="#" role="button" style="padding: 5px">
+                            <span><img alt="查看作者专栏" class="img-circle" style="width: 40px;height: 40px"
+                                    th:src="${session.user.avatarUrl}"></span>
+                        <span th:text="${session.user.name}"></span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/profile/message">消息</a></li>
+                        <li><a href="/profile/article">个人中心</a></li>
+                        <li><a href="javascript:void(0)" data-target="#logoutModal" data-toggle="modal">退出登录</a></li>
+                    </ul>
+                    <!--退出登录模态框-->
+                    <div aria-labelledby="mySmallModalLabel" class="modal fade bs-example-modal-sm" id="logoutModal"
+                            role="dialog" tabindex="-1">
+                        <div class="modal-dialog modal-sm" role="document">
+                            <div class="modal-content">
+                                <form action="/logout" method="post">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">确定退出？</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input checked name="delCookie" type="checkbox">取消自动登录
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-default" data-dismiss="modal" type="button">Close
+                                        </button>
+                                        <input class="btn btn-info active" type="submit" value="退出登录">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 

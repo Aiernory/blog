@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ren.aiernory.blog.dto.PageHelper;
 import ren.aiernory.blog.mapper.PublishMapper;
 import ren.aiernory.blog.model.Publish;
+import ren.aiernory.blog.model.User;
 import ren.aiernory.blog.service.PublishService;
 
 import javax.annotation.Resource;
@@ -37,12 +38,34 @@ public class PublishServiceImpl implements PublishService {
         int totalCount = publishMapper.getTotalCount();
         pageHelper.setPageList(totalCount);
     
-        List<Publish> publishes = publishMapper.listAllWithUserByPage(page - 1, size);
+        List<Publish> publishes = publishMapper.listAllWithUserByPage((page - 1)*size, size);
         pageHelper.setPublishes(publishes);
         return pageHelper;
     }
     
-  
+    @Override
+    public PageHelper listByCreator(User user,int page, int size){
+        PageHelper pageHelper =new PageHelper();
+        pageHelper.setCurrentPage(page);
+        pageHelper.setSize(size);
+        int totalCount = publishMapper.getTotalCountByCreator(user);
+        pageHelper.setPageList(totalCount);
+    
+        List<Publish> publishes = publishMapper.listByCreatorWithUserByPage(user,(page - 1)*size, size);
+        pageHelper.setPublishes(publishes);
+        return pageHelper;
+    }
+    
+    @Override
+    public Publish getById(Integer id) {
+        return publishMapper.selectById(id);
+    }
+    
+    @Override
+    public int update(Publish publish) {
+        publish.setGmtModified(System.currentTimeMillis());
+        return publishMapper.updateByPrimaryKey(publish);
+    }
     
     
 }

@@ -3,10 +3,6 @@ package ren.aiernory.blog;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 import tk.mybatis.spring.annotation.MapperScan;
 
 
@@ -19,6 +15,5 @@ public class BlogApplication {
     }
     
     
-
 }
 
