@@ -17,9 +17,56 @@
         <!--左右各一格子留白-->
         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
         
+        
         <!--问题面板-->
         <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12">
-            <h2><span>全部问题</span></h2>
+            
+            <!--排序导航条-->
+            <span>
+                <div style="margin-top: 30px;float:right;">
+                <form action="/home" class="form-inline" id="page-list-order" method="get" th:id="list-order-form">
+                    <input hidden="hidden" name="size" th:value="${pageHelper.size}"/>
+                    <input hidden="hidden" name="order" th:id="list-order-input" th:value="${pageHelper.order}"/>
+                    <ul class="nav nav-pills">
+                        <li role="presentation">
+                            <button class="btn btn-default" id="list-order-create"
+                                    th:classappend="${pageHelper.order==1||pageHelper.order==2}?'btn-info'"
+                                    type="button">
+                                发表时间
+                                <span aria-hidden="true" class="glyphicon glyphicon-chevron-up"
+                                        th:if="${pageHelper.order==2}"></span>
+                                <span aria-hidden="true" class="glyphicon glyphicon-chevron-down"
+                                        th:if="${pageHelper.order==1}"></span>
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button class="btn btn-default" id="list-order-modified"
+                                    th:classappend="${pageHelper.order==3||pageHelper.order==4}?'btn-info'"
+                                    type="button">
+                                回复时间
+                                <span aria-hidden="true" class="glyphicon glyphicon-chevron-up"
+                                        th:if="${pageHelper.order==4}"></span>
+                                <span aria-hidden="true" class="glyphicon glyphicon-chevron-down"
+                                        th:if="${pageHelper.order==3}"></span>
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button class="btn btn-default" id="list-order-count"
+                                    th:classappend="${pageHelper.order==5||pageHelper.order==6}?'btn-info'"
+                                    type="button">
+                                回复数
+                                <span aria-hidden="true" class="glyphicon glyphicon-chevron-up"
+                                        th:if="${pageHelper.order==6}"></span>
+                                <span aria-hidden="true" class="glyphicon glyphicon-chevron-down"
+                                        th:if="${pageHelper.order==5}"></span>
+                            </button>
+                        </li>
+                    </ul>
+        
+                </form>
+            </div>
+                <h2>全部问题</h2>
+            </span>
             <!--列表-->
             <ul th:each="article:${pageHelper.publishes}" th:if="${not #lists.isEmpty(pageHelper.publishes)}">
                 <div style="height: 120px; padding: 15px;margin: 20px 0;border: 1px solid #eee;border-radius: 3px;
@@ -28,22 +75,24 @@
                 border-bottom-width: 1px; border-bottom-color: #0e364a;">
                     <div class="media-left">
                         <p>
-                            <a href="#">
+                            <a th:href="'/profile/'+${article.author.id}+'/article'">
                                 <img alt="查看作者专栏" class="img-circle" style="width: 60px;height: 60px"
                                         th:src="${article.author.avatarUrl}">
                             </a>
                         </p>
                         <p>
-                            <a href="#" style="font-size: 14px;color: #0095dd;" th:text="${article.author.name}"/>
+                            <a style="font-size: 14px;color: #0095dd;"
+                                    th:href="'/profile/'+${article.author.id}+'/article'"
+                                    th:text="${article.author.name}"/>
                         </p>
                     </div>
                     
                     <div class="media-body">
-                        <h4 class="media-heading"><a th:href="'/article/'+${article.id}" th:text="${article.title}"/></h4>
+                        <h4 class="media-heading"><a th:href="'/article/'+${article.id}" th:text="${article.title}"/>
+                        </h4>
                         <!--这个到时候添加上预览、悬浮窗预览、一行或者两行限定-->
-                        <div th:utext="${article.descriptionDoc}"/>
-                        <span style="font-size: 14px;font-weight: normal;color: #999999"
-                                th:text="'创建时间'+${#dates.format(article.gmtCreate,'yy/MM/dd HH:mm')}
+                        <div th:text="${article.descriptionDoc}"/>
+                        <span style="font-size: 14px;font-weight: normal;color: #999999" th:text="'创建时间'+${#dates.format(article.gmtCreate,'yy/MM/dd HH:mm')}
                                 +' | 最新回复'+${#dates.format(article.gmtModified,'yy/MM/dd HH:mm')}
                                 +' | '+${article.viewCount}
                                 +'次查看 | '+${article.commentCount}

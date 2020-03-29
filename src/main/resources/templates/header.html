@@ -24,7 +24,9 @@
                 </div>
                 <button class="btn btn-default" type="submit">搜索</button>
             </form>
-            
+            <a th:if="${session.user == null}" href="/login/tk1">
+                获取通用账号登录
+            </a>
             
             <ul class="nav navbar-nav navbar-right">
                 

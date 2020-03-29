@@ -20,7 +20,8 @@ class BlogApplicationTests {
     
     @Test
     void crudTest(){
-
+        long l = System.currentTimeMillis();
+        System.out.println(l);
     }
 
 }

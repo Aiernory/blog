@@ -35,6 +35,9 @@ public class AuthorizeController {
     @Autowired
     private UserService userService;
     
+    private String referer;
+    
+    
     @Value("${github.client.id}")
     private String clientId;
     @Value("${github.client.secret}")
@@ -104,7 +107,9 @@ public class AuthorizeController {
                     
                     if (userService.UpdateUser(modifiedUser) == 1) {
                         //修改成功
-                        request.getSession().setAttribute("user", modifiedUser);
+    
+                        HttpSession session = request.getSession();
+                        session.setAttribute("user", modifiedUser);
                         //添加成功,写入cookie
                         Cookie cookie = new Cookie("token", token);
                         cookie.setMaxAge(3600 * 24 * 7);
@@ -117,7 +122,7 @@ public class AuthorizeController {
                 n--;//超时重复
             }
         }
-        return "redirect:index";
+        return "redirect:"+referer;
     }
     
     
@@ -149,7 +154,19 @@ public class AuthorizeController {
     @Value("${github.action.href}")
     private String GithubLoginHref;
     
-  
+
+    //方便体验登录内容，之后完善一下登录、注册等
+    @GetMapping("/login/tk1")
+    public String loginByQuickly(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        User user=new User();
+        user.setId(1);
+        user = userService.selectById(user);
+        session.setAttribute("user", user);
+        referer = request.getHeader("referer");
+        return "redirect:"+referer;
+    }
+    
     @GetMapping("/login")
     public String loginByCookie(HttpServletRequest request ,Model model,
                                 HttpServletResponse response){
@@ -158,11 +175,12 @@ public class AuthorizeController {
         //登录，cookie检测
         HttpSession session = request.getSession();
         cookieLogin.cookieVerify(request);
+        referer = request.getHeader("referer");
+    
         if(session.getAttribute("user")==null){
             //访问github登录链接
             return "redirect:"+GithubLoginHref;
         }
-        String referer = request.getHeader("referer");
         return "redirect:"+referer;
     }
 }

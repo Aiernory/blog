@@ -19,4 +19,8 @@ public interface UserService {
     
     int addUser(User user);
     int UpdateUser(User user);
+    
+    User selectById(User user);
+    
+    User getUnPrivativeMessage(User user);
 }

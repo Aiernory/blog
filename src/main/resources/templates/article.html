@@ -8,9 +8,15 @@
     <script src="/js/jquery-3.4.1.js"></script>
     <script src="/js/bootstrap.js"></script>
     <!--其他-->
-    <script src="/js/homePage.js"></script>
+    <link href="/plugins/editor.md-master/css/editormd.preview.css" rel="stylesheet">
+    <link href="/plugins/editor.md-master/css/editormd.css" rel="stylesheet"/>
+    <script src="/plugins/editor.md-master/editormd.js"></script>
+    <script src="/js/editorMdComment.js"></script>
+    
+    <script src="/js/comment.js"></script>
     <script src="/js/APlayer.js"></script>
     <link href="/css/APlayer.css" rel="stylesheet">
+
 </head>
 
 
@@ -26,15 +32,21 @@
         <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12">
             <h3 th:text="${article.title}"/>
             <hr/>
-            <!--编辑按钮-->
-            <span>
+            <!--编辑按钮\状态栏-->
+            <div>
+                <span>
                    <a th:href="'/publish/edit/'+${article.id}"
-                           th:if="${session.user!=null && session.user.id==article.creator}"><span aria-hidden="true"
-                           class="glyphicon glyphicon-pencil"/>编辑</a>
-            </span>
-         <span >
-             阅读数等等信息
-         </span>
+                           th:if="${session.user!=null && session.user.id==article.author.id}">
+                       <span aria-hidden="true" class="glyphicon glyphicon-pencil"/>
+                       编辑
+                   </a>
+                </span>
+                <span style="font-size: 14px;font-weight: normal;color: #999999" th:text="${article.viewCount}+'次查看 | '
+                +${article.commentCount}+'条回复 | '
+                +${article.likeCount}+'个赞'+' | '
+                +'创建时间'+${#dates.format(article.gmtCreate,'yy/MM/dd HH:mm')}+' | '
+                +'最新回复'+${#dates.format(article.gmtModified,'yy/MM/dd HH:mm')}+' | '"/>
+            </div>
             <!--音乐占位栏-->
             <div class="demo" th:if="${article.musicStatus!=0}">
                 <p><strong>aplayer音乐播放器</strong></p>
@@ -44,32 +56,162 @@
                 </div>
                 <div hidden="hidden" id="Aplayer-music-msg"
                         th:text="${article.musicStatus}+'/*-'+${article.musicContent}+'/*-'+${musicPath}"/>
+                <!--音乐渲染-->
+                <script>
+                    let music_msg = $("#Aplayer-music-msg").html();
+                    let musicUrl;
+                    let split = music_msg.split("/*-");
+                    let ap;
+                    if (split[0] == "1") {
+                        musicUrl = "http://music.163.com/song/media/outer/url?id=" + split[1];
+                        ap = new APlayer
+                        ({
+                            element: document.getElementById('player1'),
+                            narrow: false,
+                            autoplay: false,
+                            music: {
+                                title: '网易音乐',
+                                author: 'id:' + split[1],
+                                url: musicUrl,
+                            }
+                        });
+                    } else if (split[0] == "2") {
+                        musicUrl = split[2] + split[1];
+                        ap = new APlayer
+                        ({
+                            element: document.getElementById('player1'),
+                            narrow: false,
+                            autoplay: false,
+                            music: {
+                                title: '本地音乐',
+                                author: split[1],
+                                url: musicUrl,
+                            }
+                        });
+                    }
+                    ap.init();
+                </script>
             </div>
             <!--md显示栏-->
-            <div th:text="${article.descriptionDoc}">
-            晚点，直接跟着小匠渲染吧。。。。。。
+            <div id="article-content" th:utext="${article.descriptionCode}"></div>
+            <!--需要边框修改一下...-->
+            <!--作者的信息-->
+            <div>
+                <br><br>
+                作者信息，，，
+                <br><br>
+            </div>
+            <!--评论，这东西也需要分页，ajax动态获取-->
+            <!--先部分也，全部获取-->
+            <div id="comment-list-div">
+                <div th:text="${article.commentCount}+'个回复'"></div>
+                <!--评论列表面板-->
+                <ul class="list-group">
+                    <li class="list-group-item comment-list-li " th:each="comment:${article.comments}"
+                            th:id="'comment-id-'+${comment.id}" th:if="${not #lists.isEmpty(article.comments)}">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="media">
+                                    <!--左侧的头像-->
+                                    <div class="media-left">
+                                        <p>
+                                            <a th:href="'/profile/'+${comment.author.id}+'/article'">
+                                                <img alt="用户头像" class="media-object" style="height: 60px;width: 60px"
+                                                        th:src="${comment.author.avatarUrl}">
+                                            </a>
+                                        </p>
+                                        <p>
+                                            <a style="font-size: 14px;color: #0095dd;"
+                                                    th:href="'/profile/'+${comment.author.id}+'/article'"
+                                                    th:text="${comment.author.name}"></a>
+                                        
+                                        </p>
+                                    </div>
+                                    <!--评论内容-->
+                                    <div class="media-body">
+                                        <div th:utext="${comment.content}"></div>
+                                        <div>
+                                            <span th:text="${#dates.format(comment.gmtModified,'yy/MM/dd HH:mm')}">评论时间 </span>
+                                            <span> <button class="btn btn-info show-input-comment"
+                                                    th:if="${session.user!=null}" type="button">评论Ta</button></span>
+                                            <!--<span>点赞算了吧</span>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--子面板位置1-->
+                                <ul class="list-group" th:if="${comment.childComment!=null}">
+                                    <li class="list-group-item comment-list-l"
+                                            th:each="childComment:${comment.childComment}"
+                                            th:id="'child-comment-id-'+${childComment.id}"
+                                            th:if="${not #lists.isEmpty(comment.childComment)}">
+                                        <div class="modal-body">
+                                            <div class="media">
+                                                <!--左侧的头像-->
+                                                <div class="media-left">
+                                                    <p>
+                                                        <a th:href="'/profile/'+${childComment.author.id}+'/article'">
+                                                            <img alt="用户头像" class="media-object"
+                                                                    style="height: 50px;width: 50px"
+                                                                    th:src="${childComment.author.avatarUrl}">
+                                                        </a>
+                                                    </p>
+                                                    <p>
+                                                        <a style="font-size: 12px;color: #0095dd;"
+                                                                th:href="'/profile/'+${childComment.author.id}+'/article'"
+                                                                th:text="${childComment.author.name}"></a>
+                                                    </p>
+                                                </div>
+                                                <!--评论内容-->
+                                                <div class="media-body">
+                                                    <div th:utext="${childComment.content}"></div>
+                                                    <div>
+                                                        <span th:text="${#dates.format(childComment.gmtModified,'yy/MM/dd HH:mm')}">评论时间 </span>
+                                                        <span> <button class="btn btn-info show-input-child-comment"
+                                                                th:if="${session.user!=null}"
+                                                                type="button">评论Ta</button></span>
+                                                        <!--<span>点赞算了吧</span>-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--子面板位置2-->
+                        </div>
+                        <!--子面板位置3-->
+                    </li>
+                </ul>
+            
+            
+            </div>
+            <!--评论框框-->
+            <div id="comment-input-dialog" th:if="${session.user!=null}">
+                <!--在这里得到ajax需要的data-->
+                <span>
+                    <img class="img-rounded" style="height: 40px;width: 40px" th="我的头像"
+                            th:src="${session.user.avatarUrl}">
+                    <span th:text="${session.user.name}"></span>
+                </span>
+                <!--需要传递的信息有：评论人id，评论内容，所属文章，子评论与否信息-->
+                <form id="comment-editormd">
+                    <!--评论人id-->
+                    <input hidden name="creator" th:value="${session.user.id}" type="text">
+                    <!--文章id-->
+                    <input hidden name="article" th:value="${article.id}" type="text">
+                    <!--parent-->
+                    <input hidden name="parent" type="text" value="-1">
+                    
+                    <!--是否子评论，这个位置的默认不是子评论，值取-1-->
+                    <!--markdown插件-->
+                    <!--评论内容-->
+                    <div th:include="editorPage :: editor-body"></div>
+                    <button class="btn btn-danger" disabled id="submit-comment-editormd" type="button">发表评论</button>
+                    <button class="btn  btn-info show-input-article" type="button">返回文章评论</button>
+                </form>
             </div>
         </div>
-        <script>
-            let music_msg = $("#Aplayer-music-msg").html();
-            let musciUrl;
-            let split = music_msg.split("/*-");
-            if (split[0] == "1") {
-                musciUrl = "http://music.163.com/song/media/outer/url?id=" + split[1] + ".mp3";
-            } else if (split[0] == "2") {
-                musciUrl = split[2] + split[1];
-            }
-            let ap = new APlayer
-            ({
-                element: document.getElementById('player1'),
-                narrow: true,
-                autoplay: false,
-                music: {
-                    url: musciUrl,
-                }
-            });
-            ap.init();
-        </script>
+        
         <!--副面板-->
         <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10" style="background-color: silver">
         

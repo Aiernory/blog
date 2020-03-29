@@ -1,13 +1,9 @@
 package ren.aiernory.blog.dto;
 
 import lombok.Data;
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import ren.aiernory.blog.model.Publish;
-import ren.aiernory.blog.service.PublishService;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,9 +14,9 @@ import java.util.List;
  */
 @Data
 public class PageHelper {
+    //分页展示内容，包含当前页的内容，和页标信息
     
     
-
     private Boolean showPrevious;
     private Boolean showFirstPage;
     private Boolean showNext;
@@ -30,12 +26,14 @@ public class PageHelper {
     private Integer size;
     private Integer currentPage;
     
+    
+    private Integer order;
     private List<Publish> publishes;
     private List<Integer> pageList;
-
+    
     
     public void setPageList(int totalCount) {
-      
+        
         maxPage = (int) Math.ceil((double) totalCount / size);
         int begin = 1;
         
@@ -46,12 +44,12 @@ public class PageHelper {
         if (maxPage <= 5) {
             begin = 1;
         } else if (currentPage >= 3 && currentPage <= maxPage - 2) {
-            begin=currentPage-2;
-        } else{
-            if(currentPage<=2){
-                begin=1;
-            }else if(currentPage>=maxPage-2){
-                begin=maxPage-4;
+            begin = currentPage - 2;
+        } else {
+            if (currentPage <= 2) {
+                begin = 1;
+            } else if (currentPage >= maxPage - 2) {
+                begin = maxPage - 4;
             }
         }
         

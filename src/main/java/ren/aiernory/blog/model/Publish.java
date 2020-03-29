@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author Aiernory
@@ -31,5 +32,6 @@ public class Publish {
     private String musicContent;
     @Transient
     private User author;
-   
+    @Transient
+    private List<Comment> comments;
 }

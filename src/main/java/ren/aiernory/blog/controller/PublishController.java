@@ -1,5 +1,6 @@
 package ren.aiernory.blog.controller;
 
+import com.mysql.cj.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -8,15 +9,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
-import ren.aiernory.blog.exception.CustomizeErrorCode;
-import ren.aiernory.blog.exception.CustomizeException;
+import ren.aiernory.blog.enums.ErrorCodeEnum;
+import ren.aiernory.blog.resultMessage.ErrorMessage;
 import ren.aiernory.blog.model.Publish;
 import ren.aiernory.blog.model.User;
 import ren.aiernory.blog.service.PublishService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * @author Aiernory
@@ -34,7 +37,11 @@ public class PublishController {
     private String localPath;
     
     @GetMapping
-    public String publish() {
+    public String publish(HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        if(user==null){
+            throw new ErrorMessage(ErrorCodeEnum.NOT_LOGIN_PUBLISH);
+        }
         return "publish";
     }
     
@@ -77,7 +84,7 @@ public class PublishController {
     
     @GetMapping("/edit/{id}")
     public ModelAndView editor(@PathVariable(name = "id") Integer id, ModelAndView modelAndView) {
-        Publish article = publishService.getById(id);
+        Publish article = publishService.getByIdWithAuthor(id);
         modelAndView.addObject("action", "edit");
         modelAndView.addObject("article", article);
         modelAndView.setViewName("publish");
@@ -90,10 +97,16 @@ public class PublishController {
                          @RequestParam("title") String title,
                          @RequestParam("test-editormd-html-code") String descriptionCode,
                          @RequestParam("test-editormd-markdown-doc") String descriptionDoc,
-                         @RequestParam("music") String music) {
-        Publish article = publishService.getById(id);
+                         @RequestParam("music") String music,
+                         HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Publish article = publishService.getByIdWithAuthor(id);
         if (article == null) {
-            throw new CustomizeException(CustomizeErrorCode.QUESTION_UPDATE_FAILED);
+            throw new ErrorMessage(ErrorCodeEnum.QUESTION_UPDATE_FAILED);
+        }
+        User user = (User) session.getAttribute("user");
+        if(user==null || !article.getCreator().equals(user.getId())){
+            throw new ErrorMessage(ErrorCodeEnum.QUESTION_UPDATE_NOT_AUTHOR);
         }
         article.setTitle(title);
         article.setDescriptionCode(descriptionCode);
@@ -115,7 +128,7 @@ public class PublishController {
             }
         
         if (publishService.update(article) != 1) {
-            throw new CustomizeException(CustomizeErrorCode.QUESTION_UPDATE_FAILED);
+            throw new ErrorMessage(ErrorCodeEnum.QUESTION_UPDATE_FAILED);
         }
         return "redirect:/home";
     }

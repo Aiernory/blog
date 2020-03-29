@@ -104,7 +104,7 @@
         delay                : 300,            // Delay parse markdown to html, Uint : ms
         autoLoadModules      : true,           // Automatic load dependent module files
         watch                : true,
-        placeholder          : "Enjoy Markdown! coding now...",
+        placeholder          : "想要制作复杂页面效果，可以点击工具栏最后一个，得到html源码，直接修改源码。\n支持bootstrap、jquery\nEnjoy Markdown! coding now......",
         gotoLine             : true,
         codeFold             : false,
         autoHeight           : false,

@@ -25,7 +25,18 @@ public class HomeController {
     @GetMapping({"/home","/","/index"})
     public ModelAndView changePage(ModelAndView modelAndView,
                                    @RequestParam(name = "page", defaultValue = "1") Integer page,
-                                   @RequestParam(name = "size", defaultValue = "7") Integer size) {
+                                   @RequestParam(name = "size", defaultValue = "7") Integer size,
+                                   @RequestParam(name = "order",defaultValue = "1") Integer order) {
+        /*
+        数字order不容易出错
+        1   创建时间降序
+        2   create 升序
+        3   modified 降序
+        4   modified 升序
+        5   commentCount 降序
+        6   commentCount 升序
+         */
+ 
         if (size < 1) {
             //方式乱get，导致后台报错问题
             size = 1;
@@ -34,7 +45,10 @@ public class HomeController {
             //方式乱get，导致后台报错问题
             page = 1;
         }
-        PageHelper pageHelper = publishService.listPage(page, size);
+        if(order<1||order>6){
+            order =1 ;
+        }
+        PageHelper pageHelper = publishService.listPage(page, size,order);
         modelAndView.addObject("pageHelper", pageHelper);
         modelAndView.setViewName("home");
         

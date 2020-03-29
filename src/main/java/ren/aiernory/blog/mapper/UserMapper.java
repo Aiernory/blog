@@ -14,4 +14,6 @@ public interface UserMapper extends Mapper<User> {
     
     User selectByAccountId(String accountId);
     User selectByToken(String token);
+    
+    User getUnPrivativeMessageById(Integer id);
 }

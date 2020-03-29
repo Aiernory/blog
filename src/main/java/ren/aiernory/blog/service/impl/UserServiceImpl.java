@@ -70,4 +70,14 @@ public class UserServiceImpl implements UserService {
         return userMapper.updateByPrimaryKey(user);
     }
     
+    
+    @Override
+    public User selectById(User user){
+        return userMapper.selectByPrimaryKey(user);
+    }
+    
+    @Override
+    public User getUnPrivativeMessage(User user) {
+        return userMapper.getUnPrivativeMessageById(user.getId());
+    }
 }

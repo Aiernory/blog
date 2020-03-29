@@ -78,18 +78,7 @@
 			var helpContent = dialog.find(".markdown-body");
 
 			var htmlBody = $(".editormd-preview-container").eq(0).html();
-			var htmlPrefix = "<!DOCTYPE html>\n" +
-				"<html lang=\"zh\">\n" +
-				"<head>\n" +
-				"    <meta charset=\"utf-8\"/>\n" +
-				"    <title>文章编辑</title>\n" +
-				"</head>\n" +
-				"<body>";
-			var htmlSuffix = "</body>\n" +
-				"</html>";
-			helpContent.text(htmlPrefix + htmlBody + htmlSuffix);
-
-
+			helpContent.text(htmlBody);
 			dialog.find("." + classPrefix + "dialog-close").bind(editormd.mouseOrTouch("click", "touchend"), function () {
 				helpContent.html("");
 				return this;

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
-import ren.aiernory.blog.exception.CustomizeErrorCode;
-import ren.aiernory.blog.exception.CustomizeException;
+import ren.aiernory.blog.enums.ErrorCodeEnum;
+import ren.aiernory.blog.resultMessage.ErrorMessage;
 import ren.aiernory.blog.model.Publish;
 import ren.aiernory.blog.service.PublishService;
 
@@ -28,12 +28,16 @@ public class ArticleController {
     
     @GetMapping("/article/{id}")
     public ModelAndView article(@PathVariable(name = "id") Integer id, ModelAndView modelAndView, HttpServletRequest request){
-        Publish article = publishService.getById(id);
+        Publish article = publishService.getByIdWithComments(id);
         if(article==null){
-            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            throw new ErrorMessage(ErrorCodeEnum.QUESTION_NOT_FOUND);
         }
+        //小改动，点击去的时候
+        article.setViewCount(article.getViewCount()+1);
         modelAndView.addObject("article",article);
         modelAndView.setViewName("article");
+        //阅读数增加,暂时每次请求都增加
+        publishService.incView(id);
         modelAndView.addObject("musicPath",sourcePath);
         return modelAndView;
     }

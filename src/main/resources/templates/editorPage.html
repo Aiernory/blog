@@ -11,8 +11,9 @@
         <div class=" panel-heading editormd editormd-vertical editormd-theme-elegant editormd-fullscreen"
                 id="test-editormd" style="width: 100%">
         <textarea class="editormd-markdown-textarea" id="mdeditor-textarea" name="test-editormd-markdown-doc"
-               th:text="${action=='edit'}?${article.descriptionDoc}" placeholder="Enjoy Markdown! coding now..." style="display: none;">这里是文章内容</textarea>
-            
+            th:text="${action=='edit'}?${article.descriptionDoc}"
+                style="display: none;">这里是文章内容</textarea>
+           
             <div class="editormd-preview editormd-preview-theme-eclipse"
                     style="display: block; width: 100%; top: 42px;">
                 <div class="markdown-body editormd-preview-container" previewcontainer="true"

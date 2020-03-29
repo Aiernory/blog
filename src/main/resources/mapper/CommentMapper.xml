@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ren.aiernory.blog.mapper.CommentMapper">
+    
+    <resultMap id="verify" type="ren.aiernory.blog.model.Comment">
+        <id property="id" column="id"/>
+        <result property="content" column="content"/>
+        <result property="parent" column="parent"/>
+        <result property="article" column="article"/>
+        <result property="creator" column="creator"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <association property="author" javaType="ren.aiernory.blog.model.User" fetchType="lazy">
+            <id property="id" column="creator"/>
+            <result property="name" column="name"/>
+            <result property="bio" column="bio"/>
+            <result property="avatarUrl" column="avatarUrl"/>
+        </association>
+    </resultMap>
+    
+    <!--等了解了自定义返回值，可以再写一个方法，仅仅查询是否存在，返回查到的数量。聚合count先不考虑-->
+    <!--为了查询指定id评论是否存在-->
+    <select id="selectById" resultType="ren.aiernory.blog.model.Comment">
+        select *
+        from comment
+        where id=#{id}
+    </select>
+    <!--评论数增加,同时更新时间-->
+    <select id="incComment"  resultType="Integer" >
+        update comment
+        set comment_count = comment_count+1,gmt_modified = #{time}
+        where id = #{id}
+    </select>
+    <!--检测存在使用到的少量信息-->
+    <select id="verify" parameterType="Integer" resultMap="verify">
+        select c.*,u.*
+        from comment c
+        left join user u
+        on  c.creator = u.id
+        where
+        c.id=#{id}
+    </select>
+    
+
+</mapper>
