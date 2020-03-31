@@ -10,7 +10,7 @@
     </parent>
     <groupId>ren.aiernory</groupId>
     <artifactId>blog</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <name>blog</name>
     <description>blog</description>
     <packaging>jar</packaging>
@@ -100,8 +100,15 @@
         </dependency>
         
         <!--redis-->
-  
-        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!--jedis 直接操作-->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
     </dependencies>
     
     <build>

@@ -31,6 +31,12 @@ public class CommentController {
     @Autowired
     private PublishService publishService;
     
+    /**
+     * 发表评论
+     * @param body
+     * @param request
+     * @return
+     */
     @ResponseBody
     @PostMapping("/comment")
     public String post(@RequestBody String body, HttpServletRequest request) {
@@ -52,28 +58,27 @@ public class CommentController {
         return jsonString;
     }
     
-    @ResponseBody
-    @PostMapping("/comment/getList")
-    public String getList(Integer id) {
-        //唯一参数是页面id，在这里先调试渲染，获取所有的评论
-        
-  
-        /*
-        Comment 属性
-        Integer id;//自增
-        Integer parentId;
-        Integer type;
-        Integer creator;
-        Integer likeCount;//初始0
-        String content;
-        Long gmtCreate;//时间,与publish的设定保持方式一致，在service方法中设置
-        Long gmtModified;//时间
-         */
     
-        //方法应该有id
-
-        
-        String jsonString = JSON.toJSONString(new Object());
-        return jsonString;
-    }
+    //@ResponseBody
+    //@PostMapping("/comment/getList")
+    //public String getList(Integer id) {
+    //    //唯一参数是页面id，在这里先调试渲染，获取所有的评论
+    //
+    //    /*
+    //    Comment 属性
+    //    Integer id;//自增
+    //    Integer parentId;
+    //    Integer type;
+    //    Integer creator;
+    //    Integer likeCount;//初始0
+    //    String content;
+    //    Long gmtCreate;//时间,与publish的设定保持方式一致，在service方法中设置
+    //    Long gmtModified;//时间
+    //     */
+    //
+    //    //方法应该有id
+    //
+    //    String jsonString = JSON.toJSONString(new Object());
+    //    return jsonString;
+    //}
 }

@@ -148,3 +148,26 @@ postman来检测后台数据是否正确
                       额外的点赞记录表中：  用户 和 帖子->标签 唯一
 等我想明白了在搞这个。现在树状的标签管理结构参考layUI来实现。
 先完成数据交流、先不涉及数据库
+
+
+
+## 将之前的方法全部转restful风格  3.31
+        改动和尝试的改动
+            LabelController
+            	@PostMapping("/addLabel")			添加标签					@PostMapping("/label")
+                @PostMapping("/userLabelStatus")	根据用户，修改前台样式		@GetMapping("/userLabel")
+            	@PostMapping("/getTempLabel")		获得redis					@GetMapping("/tempLabel")
+            	@PostMapping("/getLabel")			获得mysql					@GetMapping("/label")
+            	@PostMapping("/likeLabel")			操作redis					@PutMapping("/label")
+
+            @RequestMapping("/publish")
+            PublishController
+            	@PostMapping("/edit/{id}") 	form没有put，未修改		@PutMapping("/edit/{id}")
+            	@PostMapping("/localMusic")	得到本地音乐			@GetMapping("/music")
+            	@PostMapping("/uploadMusic")上传音乐				@PostMapping("/music")
+            	。该回去了，get全改成了post，名字：gUserLAbel  gLabel gTempLabel
+            	请求体...
+
+
+##elastic search 加不进去了。要求内存太大了
+    改成标题、标签查找。另外以springboot方式引入redis，作为缓存。...或者不要。内存太小了....

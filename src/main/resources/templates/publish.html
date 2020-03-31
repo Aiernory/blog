@@ -32,7 +32,7 @@
             
             
             <!--尝试保存内容，现在要去看视频了-->
-            <form method="post" th:action="${action!='edit'}?'/publish':'/publish/edit/'+${article.id}">
+            <form th:method="${action!='edit'}?'post':'put'" th:action="${action!='edit'}?'/publish':'/publish/edit/'+${article.id}">
                 
                 <!--浅绿色，标题-->
                 <div class="panel panel-success">

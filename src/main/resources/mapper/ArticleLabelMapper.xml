@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ren.aiernory.blog.mapper.ArticleLabelMapper">
+
+    
+    <select id="getLabelsByArticleId" parameterType="Integer" resultType="Integer">
+        select l_id
+        from article_label
+        where p_id = #{articleId}
+    </select>
+
+</mapper>

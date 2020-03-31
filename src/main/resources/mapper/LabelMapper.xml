@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ren.aiernory.blog.mapper.LabelMapper">
+    
+    <!--文章打开显示时调用-->
+    <select id="getNameById" parameterType="Integer" resultType="String">
+        select name
+        from label
+        where id = #{id}
+    </select>
+    
+    <!--检测name是否存在，返回id。不存在null-->
+    <select id="checkName" parameterType="String" resultType="Integer">
+        select id
+        from label
+        where name = #{name}
+    </select>
+    <!--阅读数增加-->
+    <select id="incCount" parameterType="Integer" resultType="Integer">
+        update label
+        set count = count+1
+        where id = #{id}
+    </select>
+    
+    <!--添加新的词条,返回id-->
+    <insert id="addLabel" parameterType="ren.aiernory.blog.model.Label" useGeneratedKeys="true" keyProperty="id">
+        insert into label(name,count)
+        VALUES (#{name},#{count})
+    </insert>
+
+</mapper>

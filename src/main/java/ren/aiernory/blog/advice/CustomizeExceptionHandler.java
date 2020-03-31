@@ -29,9 +29,8 @@ public class CustomizeExceptionHandler {
         String type = request.getContentType();
         if (e instanceof ErrorMessage) {
             //ErrorMessage errorMessage = (ErrorMessage) e;
-            
             modelAndView.addObject("message", e.getMessage());
-            if ("application/json".equals(type)) {
+            if (type.contains("application/json")) {
                 //返回json
                 response.setCharacterEncoding("utf-8");
                 response.setContentType("application/json");

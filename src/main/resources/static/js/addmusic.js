@@ -60,9 +60,9 @@ $(function () {
     //加载本地音乐
     $("#add-music-local-btn").click(function () {
         $.ajax({
-            type: "POST",    //请求方式
+            type: "GET",    //请求方式
             contentType: "application/json;charset=UTF-8",    //请求的媒体类型
-            url: "/publish/localMusic",    //请求地址
+            url: "/publish/music",    //请求地址
             data: "",    //参数，json字符串
             //成功
             success: function (result) {//result string数组
@@ -145,9 +145,9 @@ $(function () {
         let formData = new FormData();
         formData.append("music", $('#uploadMusic-file')[0].files[0]);
         $.ajax({
-            url: '/publish/uploadMusic',
-            dataType: 'text',
             type: 'POST',
+            url: '/publish/music',
+            dataType: 'text',
             async: false,
             data: formData,
             processData: false, // 使数据不做处理

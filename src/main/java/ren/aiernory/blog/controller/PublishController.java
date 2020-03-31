@@ -134,7 +134,7 @@ public class PublishController {
     }
     
     @ResponseBody
-    @PostMapping("/localMusic")
+    @GetMapping("/music")
     public String[] loadLocalMusic(Model model) {
         //列出指定文件夹的所有音乐文件，列表形式发送，前端处理成为可选择的标签
         File file = new File(localPath);
@@ -143,7 +143,7 @@ public class PublishController {
     }
     
     @ResponseBody
-    @PostMapping("/uploadMusic")
+    @PostMapping("/music")
     public String uploadMusic(HttpServletRequest request) {
         MultipartHttpServletRequest mulRequest = (MultipartHttpServletRequest) request;
         MultipartFile file = mulRequest.getFile("music");

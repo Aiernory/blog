@@ -6,38 +6,49 @@
     <link href="/css/bootstrap.css" rel="stylesheet">
     <script src="/js/jquery-3.4.1.js"></script>
     <script src="/js/bootstrap.js"></script>
-    <script src="/js/homePage.js"></script>
 </head>
 
-<div th:replace="~{header::headerBar}"></div>
+<div><h1>测试小标签</h1></div>
 
-模拟ajax，看看到底能不能存到数据库
+<div th:id="label-area">
+    <span th:id="label-area-articleId" th:text="${article.id}"></span>
+    
+    <button aria-label="Left Align" class="btn btn-default label-area-btn-add" type="button">
+        <span aria-hidden="true" class="glyphicon glyphicon-tags" style="color: #1baebd"></span>
+        <span class="label-area-btn-span">添加标签</span>
+    </button>
+    <input hidden class="label-area-input-add" placeholder="输入标签，回车提交" type="text"/>
+</div>
 <script>
-    
     $(function () {
-        let  data="{" +
-            "\t\"content\":\"经验+33，告辞\",\n" +
-            "\t\"creator\":4,\n" +
-            "\t\"article\":39,\n" +
-            "\t\"parent\":-1" +
-            "}";
-        
-        
-        $.ajax({
-            url: '/comment',
-            dataType: 'text',
-            type: 'POST',
-            async: false,
-            data: data,
-            processData: false, // 使数据不做处理
-            contentType: false, // 不要设置Content-Type请求头
-            success: function (msg) {
-                $("#musicUploadMsg").attr("data-content", msg);
-            },
-            error: function (msg) {
-                $("#musicUploadMsg").attr("data-content", msg);
-            }
-        });
+        //永久标签加载
+        // let articleId = $("#label-area-articleId").html();
+        // let data = {};
+        // data[articleId] = articleId;
+        let testData = '["newtest","he","heng","niupi","666"]';
+        alert(testData);
+        let parse = JSON.parse(testData);
+        alert(parse);
+
+        let label = $(".label-area-btn-add");
+
+        //持久标签，可以查找
+        let labelSearch = label.clone();
+        labelSearch.removeClass("label-area-btn-add");
+        labelSearch.addClass("label-area-btn-search");
+
+        //不持久标签，点击触发controller..的likeLabel方法
+        let labelNoSearch = label.clone();
+        labelSearch.removeClass("label-area-btn-add");
+        labelSearch.addClass("label-area-btn-noSearch");
+
+        for (let i = 0; i < testData.length; i++) {
+            let i_data = testData[i];
+            let i_btn = labelSearch.clone();
+            let i_span = i_btn.children(".label-area-btn-span");
+            i_span.html(i_data);
+            i_btn.insertBefore(".label-area-btn-add")
+        }
+
     })
-    
 </script>

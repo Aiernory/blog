@@ -1,16 +1,23 @@
 package ren.aiernory.blog.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import redis.clients.jedis.Jedis;
+import ren.aiernory.blog.enums.ErrorCodeEnum;
 import ren.aiernory.blog.model.User;
+import ren.aiernory.blog.resultMessage.ErrorMessage;
+import ren.aiernory.blog.service.LabelService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -46,7 +53,183 @@ public class LabelController {
         
 	先不管前台渲染、只管后端服务
      */
+    //   key                文章与对应label                存入用户id      用户id10个以上，持久化到mysql
+    //   article_label      1:3                          若干用户id
+    //                      文章id1：labelid3
+    
+    //防止用户添加重复的标签。前台js判断
+    
+    //key   文章：标签组合value   用户id
+    //1         n               m
+    //不要这个key，则只能存储这么一种数据。set数据类型
+    //要key，还可以做其他东西的缓存。map数据类型，其中value又为集合
+    
+    //决定，不要key了，该redis只存储标签喜欢信息。若整缓存，再去了解集成多个redis
+    //
     
     
-
+    //完全继承自Jedis
+    //手动注入...
+    @Autowired
+    private Jedis myJedis;
+    @Autowired
+    private LabelService labelService;
+    @Value("${redis.label.persist}")
+    private Integer labelThreshold;
+    
+    //添加标签。直接加到redis..修改set键的名称:  1:java  1
+    @ResponseBody
+    @PostMapping("/label")
+    public String addLabel(@RequestBody String body,
+                           HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            throw new ErrorMessage(ErrorCodeEnum.OPTION_NEED_LOGIN);
+        }
+        JSONObject obj = JSONObject.parseObject(body);
+        Integer articleId = obj.getInteger("articleId");
+        String labelName = obj.getString("labelName");
+        
+        String key = articleId + ":" + labelName;
+        Long sadd = myJedis.sadd(key, user.getId().toString());
+        if(sadd==0){
+            return "";
+        }
+        return labelName;
+    }
+    
+    /**
+     * 验证登录后且有不持久的标签是调用。返回map key为标签的name value为1喜欢、0不喜欢
+     *
+     * @param
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/gUserLabel")
+    public String userLabelStatus(@RequestBody String body, HttpServletRequest request) {
+        JSONObject obj = JSONObject.parseObject(body);
+        Integer articleId = obj.getInteger("articleId");
+        
+        Map<String, Integer> map = new HashMap<>();
+        User user = (User) request.getSession().getAttribute("user");
+        
+        //下面那个方法的结果，前台验证用户是否登录后，调用这个方法
+        Set<String> keys = myJedis.keys("" + articleId + ":*");
+        
+        //差redis库，k
+        keys.forEach(key -> {
+            String name = key.split(":")[1];
+            if (myJedis.sismember(key, user.getId().toString())) {
+                map.put(name, 1);
+            } else {
+                map.put(name, 0);
+            }
+        });
+        return JSON.toJSONString(map);
+    }
+    
+    
+    /**
+     * redis中找到文章的标签.未持久的标签
+     *
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/gTempLabel")
+    public String getTempLabel(@RequestBody String body) {
+        
+        JSONObject obj = JSONObject.parseObject(body);
+        Integer articleId = obj.getInteger("articleId");
+        
+        //键为label的名字，值为喜欢的总人数
+        Map<String, Integer> map = new HashMap<>();
+        int db = myJedis.getDB();
+        String ping = myJedis.ping();
+        //差redis库，找到未持久化的标签。
+        //通配符，只在网上看到介绍，还没实际验证
+        Set<String> keys = myJedis.keys("" + articleId + ":*");
+        if (keys != null) {
+            keys.forEach(
+                    key -> {
+                        String name = key.split(":")[1];
+                        map.put(name, myJedis.scard(key).intValue());
+                    }
+            );
+        }
+        return JSON.toJSONString(map);
+    }
+    
+    
+    /**
+     * 文章加载时，载入文章持久化的标签      。还有一个方法是载入未持久化的标签。还有一个方法是，登录用户是否喜欢这些未持旧标签。分开返回值好写一点
+     *
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/gLabel")
+    public String getLabel(@RequestBody String body) {
+        
+        JSONObject obj = JSONObject.parseObject(body);
+        Integer articleId = obj.getInteger("articleId");
+        //差mysql库，找到持久化的标签。
+        List<String> names = labelService.getLabelNameByArticleId(articleId);
+        return JSON.toJSONString(names);
+    }
+    
+    /**
+     * 当登录用户点了某个未持久化的标签后
+     *
+     * @param request
+     * @return -1:持久化标签    1&2 1表示当前用户喜欢，标签喜欢的人数为2
+     */
+    @ResponseBody
+    @PutMapping("/label")
+    public String likeLabel(@RequestBody String body,
+                            HttpServletRequest request) {
+        JSONObject obj = JSONObject.parseObject(body);
+        Integer articleId = obj.getInteger("articleId");
+        String labelName = obj.getString("labelName");
+        
+        
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            //该操作需要登陆
+            throw new ErrorMessage(ErrorCodeEnum.OPTION_NEED_LOGIN);
+        }
+        
+        String uId = user.getId().toString();
+        String key = articleId + ":" + labelName;
+        //喜欢这个标签
+        int like = 1;
+        //喜欢这个标签的人数
+        int count;
+        
+        //当前需要登录状态。从中获取user。
+        //参数文章id，和标签的id
+        //文章id和标签id组成键，user id为值，存入set。
+        Long sadd = myJedis.sadd(key, uId);
+        if (sadd == 0) {
+            //成功是1，重复是0.如果0，删除信息
+            myJedis.srem(key, uId);
+            like = 0;
+        }
+        
+        //检测是否大于某个阈值
+        count = myJedis.scard(key).intValue();
+        if (count >= labelThreshold) {
+            //持久化，存库
+            //添加文章标签。参数文章id，标签id
+            labelService.addArticleLabel(articleId, labelName);
+            //标签持久,移除redis信息
+            myJedis.del(key);
+            return "-1";
+        }
+        return "" + like + ":" + count;
+    }
+    
+    
 }

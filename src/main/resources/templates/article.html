@@ -13,9 +13,11 @@
     <script src="/plugins/editor.md-master/editormd.js"></script>
     <script src="/js/editorMdComment.js"></script>
     
-    <script src="/js/comment.js"></script>
+    <script src="/js/article.js"></script>
     <script src="/js/APlayer.js"></script>
     <link href="/css/APlayer.css" rel="stylesheet">
+    <link href="/css/article.css" rel="stylesheet"/>
+
 
 </head>
 
@@ -95,6 +97,24 @@
             <!--md显示栏-->
             <div id="article-content" th:utext="${article.descriptionCode}"></div>
             <!--需要边框修改一下...-->
+            
+            <!--自定义标签区域-->
+            <div id="label-area">
+          
+                <button aria-label="Left Align" class="btn btn-default label-area-btn-add" type="button">
+                    <span aria-hidden="true" class="glyphicon glyphicon-tags" style="color: #1baebd"></span>
+                    <span class="label-area-btn-span">添加标签</span>
+                </button>
+                <!--隐藏的可复用标签-->
+                <span hidden id="session-user-for-js" th:text="${session.user==null}?'':${session.user.id}">用户user id</span>
+                <span hidden id="label-area-articleId" th:text="${article.id}">文章id</span>
+                <input hidden id="label-area-input-add" type="text"/>
+                <span style="display: none;" class="label-area-temp-heart">
+                      <span aria-hidden="true" class="glyphicon glyphicon-heart"></span>
+                </span>
+            
+            </div>
+            
             <!--作者的信息-->
             <div>
                 <br><br>

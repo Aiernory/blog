@@ -16,7 +16,8 @@ public enum ErrorCodeEnum implements ResultMessage {
     NOT_LOGIN_COMMENT(2004,"请先登录后在评论"),
     NOT_FIND_COMMENT_PARENT(2005,"未选择评论的内容"),
     COMMENT_PARENT_NOT_FOUND(2006,"想要评论的内容找不到了"),
-    QUESTION_UPDATE_NOT_AUTHOR(2007,"你不是作者，无权更新改文章！")
+    QUESTION_UPDATE_NOT_AUTHOR(2007,"你不是作者，无权更新改文章！"),
+    OPTION_NEED_LOGIN(2008,"该操作需要登陆")
     ;
     private Integer code;
     private String message;
