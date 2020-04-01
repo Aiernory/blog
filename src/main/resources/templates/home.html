@@ -67,6 +67,7 @@
             </div>
                 <h2>全部问题</h2>
             </span>
+            
             <!--列表-->
             <ul th:each="article:${pageHelper.publishes}" th:if="${not #lists.isEmpty(pageHelper.publishes)}">
                 <div style="height: 120px; padding: 15px;margin: 20px 0;border: 1px solid #eee;border-radius: 3px;
@@ -100,6 +101,7 @@
                     </div>
                 </div>
             </ul>
+            
             <!--分页-->
             <nav aria-label="Page navigation">
                 <!--页标-->

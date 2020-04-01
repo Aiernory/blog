@@ -17,7 +17,14 @@ import javax.sound.sampled.Port;
  * @Description:
  */
 @Component
-public class MyJedis extends Jedis {
+//jedis 线程冲突，试试枷锁
+/*
+首先明确一点，在这里构造方法枷锁无意义，
+调用redis的方法，不在这，锁不住
+只能在具体操作时lock锁
+ */
+
+public  class  MyJedis extends  Jedis {
     //创建bean调用
     @Value("${redis.jedis.singleUsing.host}")
     private static String host="localhost";

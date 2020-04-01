@@ -76,6 +76,7 @@ public class LabelController {
     private LabelService labelService;
     @Value("${redis.label.persist}")
     private Integer labelThreshold;
+    private static Object lockObj=new Object();
     
     //添加标签。直接加到redis..修改set键的名称:  1:java  1
     @ResponseBody
@@ -91,7 +92,10 @@ public class LabelController {
         String labelName = obj.getString("labelName");
         
         String key = articleId + ":" + labelName;
-        Long sadd = myJedis.sadd(key, user.getId().toString());
+        Long sadd;
+        synchronized (lockObj){
+            sadd = myJedis.sadd(key, user.getId().toString());
+        }
         if(sadd==0){
             return "";
         }
@@ -115,17 +119,19 @@ public class LabelController {
         User user = (User) request.getSession().getAttribute("user");
         
         //下面那个方法的结果，前台验证用户是否登录后，调用这个方法
-        Set<String> keys = myJedis.keys("" + articleId + ":*");
         
-        //差redis库，k
-        keys.forEach(key -> {
-            String name = key.split(":")[1];
-            if (myJedis.sismember(key, user.getId().toString())) {
-                map.put(name, 1);
-            } else {
-                map.put(name, 0);
-            }
-        });
+        synchronized (lockObj){
+            Set<String> keys = myJedis.keys("" + articleId + ":*");
+            //差redis库，k
+            keys.forEach(key -> {
+                String name = key.split(":")[1];
+                if (myJedis.sismember(key, user.getId().toString())) {
+                    map.put(name, 1);
+                } else {
+                    map.put(name, 0);
+                }
+            });
+        }
         return JSON.toJSONString(map);
     }
     
@@ -145,18 +151,20 @@ public class LabelController {
         
         //键为label的名字，值为喜欢的总人数
         Map<String, Integer> map = new HashMap<>();
-        int db = myJedis.getDB();
-        String ping = myJedis.ping();
+   
         //差redis库，找到未持久化的标签。
         //通配符，只在网上看到介绍，还没实际验证
-        Set<String> keys = myJedis.keys("" + articleId + ":*");
-        if (keys != null) {
-            keys.forEach(
-                    key -> {
-                        String name = key.split(":")[1];
-                        map.put(name, myJedis.scard(key).intValue());
-                    }
-            );
+        
+        synchronized (lockObj){
+            Set<String> keys = myJedis.keys("" + articleId + ":*");
+            if (keys != null) {
+                keys.forEach(
+                        key -> {
+                            String name = key.split(":")[1];
+                            map.put(name, myJedis.scard(key).intValue());
+                        }
+                );
+            }
         }
         return JSON.toJSONString(map);
     }
@@ -211,15 +219,15 @@ public class LabelController {
         //当前需要登录状态。从中获取user。
         //参数文章id，和标签的id
         //文章id和标签id组成键，user id为值，存入set。
-        Long sadd = myJedis.sadd(key, uId);
-        if (sadd == 0) {
-            //成功是1，重复是0.如果0，删除信息
-            myJedis.srem(key, uId);
-            like = 0;
+        synchronized (lockObj){
+            Long sadd = myJedis.sadd(key, uId);
+            if (sadd == 0) {
+                //成功是1，重复是0.如果0，删除信息
+                myJedis.srem(key, uId);
+                like = 0;
+            }
+            count = myJedis.scard(key).intValue();
         }
-        
-        //检测是否大于某个阈值
-        count = myJedis.scard(key).intValue();
         if (count >= labelThreshold) {
             //持久化，存库
             //添加文章标签。参数文章id，标签id
@@ -228,8 +236,8 @@ public class LabelController {
             myJedis.del(key);
             return "-1";
         }
+        //检测是否大于某个阈值
         return "" + like + ":" + count;
     }
-    
     
 }

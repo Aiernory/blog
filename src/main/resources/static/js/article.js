@@ -48,18 +48,22 @@ $(function () {
 
     //父评论级别、移动文字编辑框
     $(".show-input-comment").click(function () {
-        let li = $(this).parent().parent().parent().parent();
+        //      btn     -span    -div    -mediaBody -media  -li
+        let li=$(this).parent().parent().parent().parent();
         $("#comment-input-dialog").insertAfter(li);
-        let id = li.parent().parent().parent().attr("id");
+        //show-input-comment-id
+        let id = $(this).attr("id");
         let split = id.split("-");
-        $("#comment-input-dialog").find("input[name=parent]").val(split[2]);
+        $("#comment-input-dialog").find("input[name=parent]").val(split[3]);
         $(".show-input-article").show();
     });
     //子评论移动编辑框
     $(".show-input-child-comment").click(function () {
-        let li = $(this).parent().parent().parent().parent();
+        //      btn     -span    -div    -mediaBody -media-modalBody  -li
+        let li=$(this).parent().parent().parent().parent().parent();
         $("#comment-input-dialog").insertAfter(li);
-        let id = li.parent().parent().attr("id");
+        //show-input-comment-id
+        let id = $(this).attr("id");
         let split = id.split("-");
         $("#comment-input-dialog").find("input[name=parent]").val(split[3]);
         $(".show-input-article").show();
@@ -131,7 +135,7 @@ $(function () {
                 let i_data = data[i];
                 let i_btn = labelSearch.clone();
                 i_btn.children(".label-area-btn-span").html(i_data);
-                i_btn.prependTo("#label-area");
+                i_btn.insertAfter("#label-search-area");
             }
         },
         //失败，包含具体的错误信息

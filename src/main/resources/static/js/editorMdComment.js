@@ -7,7 +7,7 @@ $(function () {
         autoFocus : false,
         location:"inherit",
         width: "100%",
-        height: 250,
+        height: 300,
         path: '/plugins/editor.md-master/lib/',
         theme: "elegant",
         previewTheme: "elegant",
