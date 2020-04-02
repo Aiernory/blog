@@ -80,7 +80,7 @@
 }
 
 .comment-list-child-li {
-
+    margin-top: 10px;
     padding-top: 0px;
     padding-bottom: 0px;
     padding-left: 5px;
@@ -91,7 +91,34 @@
     margin-left: 2.5%;
     padding: 5px;
     width: 95%;
+
 }
+.my-comment-content{
+    width: 90%;
+    height: 120px;
+    display: -webkit-box;
+    padding-bottom: 10px;
+    padding-left: 10px;
+
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    text-overflow:ellipsis;
+}
+.my-childComment-content{
+    width: 90%;
+    height: 90px;
+    display: -webkit-box;
+    padding-bottom: 10px;
+
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    padding-right: 10px;
+    margin-right: 10px;
+
+}
+
+
 .comment-list-li .list-group{
     margin-bottom: 0px;
 }
@@ -109,11 +136,6 @@
     width: 80%;
 }
 
-
-#comment-list-div .media-body{
-    /*position: fixed;*/
-    width: fit-content;
-}
 #comment-list-div .panel-body{
     padding-left: 0px;
 }
@@ -124,15 +146,11 @@
     padding-top: 0px;
     padding-left: 5px;
 }
-.my-childComment-content{
-    padding-right: 10px;
-    margin-right: 10px;
-}
 
 
 
     /*评论按钮*/
-.show-input-child-comment, .show-input-comment {
+.show-input-child-comment, .show-input-comment,.show-detail-comment {
     padding-left: 2px;
     padding-right: 2px;
     padding-top: 2px;

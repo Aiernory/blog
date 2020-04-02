@@ -184,15 +184,10 @@
         where id = #{id}
     </select>
     
-    
-    
-    
-    
   
-
     <!--全部文章分页,home页面的列表。再加上分类功能-->
     <select id="listAllWithUserByPageBySort" resultMap="publishWithAuthorForPageList">
-        select p.*,u.id,u.name,u.avatar_url
+        select p.*,concat(left(p.description_doc,200),'...') as descriptionDoc,u.id,u.name,u.avatar_url
         from publish AS p,user AS u
         WHERE p.id IN ${sorts}
         AND p.creator=u.id
@@ -216,10 +211,11 @@
         </if>
         limit #{page},#{size}
     </select>
-  
-    
-    
-    
+
+
+
+
+
 
 
 </mapper>

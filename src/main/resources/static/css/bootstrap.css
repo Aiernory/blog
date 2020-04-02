@@ -5868,7 +5868,7 @@ button.close {
 }
 .modal {
   position: fixed;
-  top: 0;
+  top: 60px;
   right: 0;
   bottom: 0;
   left: 0;
@@ -5920,8 +5920,8 @@ button.close {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1040;
-  background-color: #000;
+  z-index: 0;
+  background-color: rgba(255, 255, 255, 0);
 }
 .modal-backdrop.fade {
   filter: alpha(opacity=0);

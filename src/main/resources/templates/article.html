@@ -192,12 +192,15 @@
                                 <!--评论内容-->
                                 <div class="media-body">
                                 
-                                    <div class="my-comment-content" th:utext="${comment.content}"></div>
+                                    <div class="my-comment-content comment-content" th:utext="${comment.content}"></div>
                                     <div>
                                         <span th:text="${#dates.format(comment.gmtModified,'yy/MM/dd HH:mm')}">评论时间 </span>
                                         <span> <button class="btn btn-info show-input-comment"
                                                 th:id="'show-input-comment-'+${comment.id}"
                                                 th:if="${session.user!=null}" type="button">评论Ta</button></span>
+                                        <span> <button type="button" class="btn btn-info show-detail-comment" data-toggle="modal"
+                                                data-target=".bs-example-modal-lg">detail</button></span>
+                                        
                                     </div>
                                 </div>
                                 <!--子面板位置1-->
@@ -227,7 +230,7 @@
                                                 </div>
                                                 <!--评论内容-->
                                                 <div class="media-body">
-                                                    <div class="my-childComment-content"
+                                                    <div class="my-childComment-content  comment-content"
                                                             th:utext="${childComment.content}"></div>
                                                     <div>
                                                         <span th:text="${#dates.format(childComment.gmtModified,'yy/MM/dd HH:mm')}">评论时间 </span>
@@ -236,6 +239,8 @@
                                                                 th:id="'show-input-comment-'+${childComment.id}"
                                                                 th:if="${session.user!=null}"
                                                                 type="button">评论Ta</button></span>
+                                                        <span> <button type="button" class="btn btn-info show-detail-comment" data-toggle="modal"
+                                                                data-target=".bs-example-modal-lg">detail</button></span>
                                                         <!--<span>点赞算了吧</span>-->
                                                     </div>
                                                 </div>
@@ -244,16 +249,33 @@
                                     </li>
                                 </ul>
                             </div>
-                        
-                            <!--子面板位置2-->
-                            <!--子面板位置3-->
-                    
                         </li>
                     </ul>
-            
-            
+                    
                 </div>
-        
+                
+                <script>
+                    $(".show-detail-comment").click(function () {
+                        $("#modal-detail-comment").empty();
+                        let clone = $(this).parent().parent().parent().children(".comment-content").clone();
+                        clone.removeClass();
+                        clone.appendTo("#modal-detail-comment");
+                        
+                    })
+                </script>
+                <!--评论详情模态框-->
+                <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                    <div class="modal-dialog modal-lg" role="document" >
+                        <div class="modal-content">
+                            <div class="modal-body" id="modal-detail-comment">
+                           
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
             </div>
             <!--评论框框-->
         

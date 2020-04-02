@@ -49,7 +49,7 @@ $(function () {
     //父评论级别、移动文字编辑框
     $(".show-input-comment").click(function () {
         //      btn     -span    -div    -mediaBody -media  -li
-        let li=$(this).parent().parent().parent().parent();
+        let li=$(this).parent().parent().parent();
         $("#comment-input-dialog").insertAfter(li);
         //show-input-comment-id
         let id = $(this).attr("id");
@@ -95,6 +95,9 @@ $(function () {
             $("#submit-comment-editormd").removeClass("btn-danger");
         }
     }
+
+
+    //评论详情模态框
 
 ///////////////////////////////////////////////////////这里开始，是新加入、测试
 //    标签功能调试完成。
@@ -252,7 +255,7 @@ $(function () {
 //点击like标签.因为动态添加，所以事件不能直接绑定。
     //解决1：绑定到上级标签--采用
     //解决2：提前制作copy、、
-    $('#label-area').on("click", ".label-area-btn-noSearch", function () {
+    $(".layui-body").on("click", ".label-area-btn-noSearch", function () {
         let $this = $(this);
         let like_data = data;
         like_data["labelName"] = $this.children(".label-area-btn-span").html();

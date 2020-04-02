@@ -94,8 +94,8 @@ public class SortController {
          //参数不对,查所有
          sort="ALL";
         }
-        PageHelper pageHelper = sortService.listBySort(page, size,order,sort);
         
+        PageHelper pageHelper = sortService.listBySort(page, size,order,sort);
         //PageHelper pageHelper = publishService.listPage(page, size,order);
         modelAndView.addObject("pageHelper", pageHelper);
         modelAndView.addObject("sort", sort);
