@@ -14,8 +14,7 @@ import java.util.List;
  * @Description:
  */
 public interface PublishMapper extends Mapper<Publish> {
-    List<Publish> listAllWithUser();
-    
+ 
     
     //文章分页展示
     List<Publish> listAllWithUserByPage(@Param("page") int page, @Param("size") int size, @Param("order") int order);
@@ -45,5 +44,12 @@ public interface PublishMapper extends Mapper<Publish> {
     
     //评论数增加
     Integer incComment(@Param("id") Integer id, @Param("time") Long time);
+    
+    
+    //根据id数组，查到文章列表
+    List<Publish> listAllWithUserByPageBySort(@Param("page") int page, @Param("size") int size,
+                                              @Param("order") int order,  @Param("sorts") String sorts);
+    
+    
     
 }

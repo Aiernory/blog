@@ -3,35 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${article.title}"></title>
-    <!-- 引入资源 -->
-    <link href="/css/bootstrap.css" rel="stylesheet">
-    <script src="/js/jquery-3.4.1.js"></script>
-    <script src="/js/bootstrap.js"></script>
-    <!--其他-->
-    <link href="/plugins/editor.md-master/css/editormd.preview.css" rel="stylesheet">
-    <link href="/plugins/editor.md-master/css/editormd.css" rel="stylesheet"/>
-    <script src="/plugins/editor.md-master/editormd.js"></script>
-    <script src="/js/editorMdComment.js"></script>
-    
-    <script src="/js/article.js"></script>
-    <script src="/js/APlayer.js"></script>
-    <link href="/css/APlayer.css" rel="stylesheet">
-    <link href="/css/article.css" rel="stylesheet"/>
-
-
 </head>
 
 
-<div th:replace="~{header::headerBar}"></div>
-<body style="background-color: darkgrey">
-    
-    <div class="row" style="margin-left: 5%;margin-right: 5%;padding-top: 20px;
-        padding-bottom: 20px;background-color: whitesmoke">
-        <!--左右各一格子留白-->
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
-        <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12" style="background-color: #c9f3ff">
-            
-            
+
+<div th:insert="header::h5-pre"/>
+<!--其他-->
+<link href="/plugins/editor.md-master/css/editormd.preview.css" rel="stylesheet">
+<link href="/plugins/editor.md-master/css/editormd.css" rel="stylesheet"/>
+<script src="/plugins/editor.md-master/editormd.js"></script>
+<script src="/js/editorMdComment.js"></script>
+<script src="/js/article.js"></script>
+<script src="/js/APlayer.js"></script>
+<link href="/css/APlayer.css" rel="stylesheet">
+<link href="/css/article.css" rel="stylesheet"/>
+
+
+
+<div class="layui-body"  style="margin-top: 60px">
+    <!-- 独特内容 -->
+    <div class="row" style="padding: 15px;">
+        <!--文章信息-->
+        <div class="col-lg-6 col-md-8 col-sm-10"
+                style="background-color: #c9f3ff;margin-left: 30px;padding-top: 20px">
             <!--主面板-->
             <div class="panel panel-default my-main-panel ">
                 <!--标题版-->
@@ -101,26 +95,28 @@
                             ap.init();
                         </script>
                     </div>
-                    
+                
                     <!--md显示栏-->
                     <div id="article-content" th:utext="${article.descriptionCode}"></div>
                     <!--需要边框修改一下...-->
                 </div>
-                
-                
+            
+            
                 <!--标签-->
                 <div class="my-label-panel panel panel-default">
                     <div class="panel-heading"><span id="label-search-area">标签:</span></div>
                     <div class="panel-body">
                         <!--自定义标签区域-->
-                        
-                        <button aria-label="Left Align" class="btn btn-default label-area-btn-add" type="button">
+                    
+                        <button aria-label="Left Align" class="btn btn-default label-area-btn-add"
+                                type="button">
                                     <span aria-hidden="true" class="glyphicon glyphicon-tags"
                                             style="color: #1baebd"></span>
                             <span class="label-area-btn-span">添加标签</span>
                         </button>
                         <!--隐藏的可复用标签-->
-                        <span hidden id="session-user-for-js" th:text="${session.user==null}?'':${session.user.id}">用户user id</span>
+                        <span hidden id="session-user-for-js"
+                                th:text="${session.user==null}?'':${session.user.id}">用户user id</span>
                         <span hidden id="label-area-articleId" th:text="${article.id}">文章id</span>
                         <input hidden id="label-area-input-add" type="text"/>
                         <span class="label-area-temp-heart" style="display: none;">
@@ -128,7 +124,7 @@
                     </span>
                     </div>
                 </div>
-                
+            
                 <!--作者的信息-->
                 <div class="panel panel-default my-author-panel">
                     <div class="panel-heading">
@@ -157,11 +153,11 @@
                         </div>
                     </div>
                 </div>
-            
+        
             </div>
-            
+        
             <!--评论，这东西也需要分页，ajax动态获取-->
-            
+        
             <!--先部分也，全部获取-->
             <div class="panel panel-default" id="comment-list-div">
                 <div class="panel-heading">
@@ -169,10 +165,12 @@
                 </div>
                 <div class="panel-body">
                     <!--评论列表面板-->
-                    
+                
                     <ul class="list-group">
-                        <li class="list-group-item comment-list-li " th:each="comment,commentState:${article.comments}"
-                                th:id="'comment-id-'+${comment.id}" th:if="${not #lists.isEmpty(article.comments)}">
+                        <li class="list-group-item comment-list-li "
+                                th:each="comment,commentState:${article.comments}"
+                                th:id="'comment-id-'+${comment.id}"
+                                th:if="${not #lists.isEmpty(article.comments)}">
                                 <span style="font-size: 25px;right: 5px;float: right;color: #00acef;user-select: none;position: absolute;"
                                         th:text="'#'+${commentState.count}"> </span>
                             <div class="media">
@@ -180,7 +178,8 @@
                                 <div class="media-left">
                                     <p>
                                         <a th:href="'/profile/'+${comment.author.id}+'/article'">
-                                            <img alt="用户头像" class="media-object" style="height: 60px;width: 60px"
+                                            <img alt="用户头像" class="media-object"
+                                                    style="height: 60px;width: 60px"
                                                     th:src="${comment.author.avatarUrl}">
                                         </a>
                                     </p>
@@ -192,7 +191,7 @@
                                 </div>
                                 <!--评论内容-->
                                 <div class="media-body">
-                                    
+                                
                                     <div class="my-comment-content" th:utext="${comment.content}"></div>
                                     <div>
                                         <span th:text="${#dates.format(comment.gmtModified,'yy/MM/dd HH:mm')}">评论时间 </span>
@@ -228,11 +227,12 @@
                                                 </div>
                                                 <!--评论内容-->
                                                 <div class="media-body">
-                                                    <div class="my-childComment-content" th:utext="${childComment.content}">
-                                                    </div>
+                                                    <div class="my-childComment-content"
+                                                            th:utext="${childComment.content}"></div>
                                                     <div>
                                                         <span th:text="${#dates.format(childComment.gmtModified,'yy/MM/dd HH:mm')}">评论时间 </span>
-                                                        <span> <button class="btn btn-info show-input-child-comment"
+                                                        <span> <button
+                                                                class="btn btn-info show-input-child-comment"
                                                                 th:id="'show-input-comment-'+${childComment.id}"
                                                                 th:if="${session.user!=null}"
                                                                 type="button">评论Ta</button></span>
@@ -244,20 +244,20 @@
                                     </li>
                                 </ul>
                             </div>
-                            
+                        
                             <!--子面板位置2-->
                             <!--子面板位置3-->
-                        
+                    
                         </li>
                     </ul>
-                
-                
-                </div>
             
+            
+                </div>
+        
             </div>
             <!--评论框框-->
-            
-            
+        
+        
             <div id="comment-input-dialog" th:if="${session.user!=null}">
                 <!--在这里得到ajax需要的data-->
                 <span>
@@ -273,26 +273,21 @@
                     <input hidden name="article" th:value="${article.id}" type="text">
                     <!--parent-->
                     <input hidden name="parent" type="text" value="-1">
-                    
+                
                     <!--是否子评论，这个位置的默认不是子评论，值取-1-->
                     <!--markdown插件-->
                     <!--评论内容-->
                     <div th:include="editorPage :: editor-body"></div>
-                    <button class="btn btn-danger" disabled id="submit-comment-editormd" type="button">发表评论</button>
+                    <button class="btn btn-danger" disabled id="submit-comment-editormd" type="button">发表评论
+                    </button>
                     <button class="btn  btn-info show-input-article" type="button">返回文章评论</button>
                 </form>
             </div>
-        
+    
         </div>
         <!--副面板-->
-        <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10" style="background-color: silver">
-        
-        
-        </div>
-        
-        <!--左右各一格子留白-->
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+        <div class="col-lg-4 col-md-3 col-sm-2" style="background-color: silver"></div>
     </div>
+</div>
 
-
-</body>
+</html>

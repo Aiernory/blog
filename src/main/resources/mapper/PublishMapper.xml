@@ -29,8 +29,7 @@
     <resultMap id="publishWithAuthorForPageList" type="ren.aiernory.blog.model.Publish">
         <id column="id" property="id"/>
         <result property="title" column="title"/>
-        <result property="descriptionCode" column="description_code"/>
-        <result property="descriptionDoc" column="description_doc"/>
+        <result property="descriptionDoc" column="descriptionDoc"/>
         <result property="gmtCreate" column="gmt_create"/>
         <result property="gmtModified" column="gmt_modified"/>
         <result property="creator" column="creator"/>
@@ -80,60 +79,11 @@
     </resultMap>
     
     
-    <!--结果带上user，打开文章时（评论时获取存在与否信息，这点需要改变、简化）-->
-    <select id="selectByIdWithComments" parameterType="Integer" resultMap="publishWithAuthorAndComment">
-        SELECT pub.*,
-        user1.id id1,user1.name name1,user1.bio bio1,user1.avatar_url avatarUrl1,
-        com.id c_id,
-        com.content c_content,
-        com.parent c_parent,
-        com.like_count c_like_count,
-        com.comment_count c_comment_count,
-        com.gmt_create c_gmt_create,
-        com.gmt_modified c_gmt_modified,
-        com.creator c_creator,
-        user2.id id2,user2.name name2,user2.bio bio2,user2.avatar_url avatarUrl2
-        FROM publish pub
-        LEFT JOIN user user1 ON pub.creator = user1.id
-        LEFT JOIN comment com ON pub.id = com.article
-        LEFT JOIN user user2 ON com.creator = user2.id
-        WHERE pub.id=#{id}
-    </select>
-    
-    
-    
-    
-    
-    <select id="selectByIdWithAuthor" parameterType="Integer" resultMap="publishWithAuthor">
-        select p.*,u.id,u.name,u.bio,u.avatar_url
-        from publish p,user u
-        where p.id = #{id} and u.id=p.creator
-    </select>
-    
-    
-    
-    <!--检测是否存在-->
-    <select id="verify" parameterType="Integer" resultType="Integer">
-        select p.id
-        from publish p
-        where p.id = #{id}
-    </select>
-    
-    
-    <!--全部，不分页，没实际用上-->
-    <select id="listAllWithUser" resultMap="publishWithAuthor">
-        select p.*,u.*
-        from publish AS p,user AS u
-        where u.id=p.creator
-    </select>
-    
-    
     <!--全部文章分页,home页面的列表-->
     <select id="listAllWithUserByPage" resultMap="publishWithAuthorForPageList">
-        select p.*,u.id,u.name,u.avatar_url
+        select p.*,concat(left(p.description_doc,200),'...') as descriptionDoc,u.id,u.name,u.avatar_url
         from publish AS p,user AS u
         where u.id=p.creator
-
         <if test="order == 1" >
             order by p.id desc
         </if>
@@ -163,6 +113,7 @@
     </select>
     
     
+    
     <!--用户文章分页，个人信息-->
     <select id="listByCreatorWithUserByPage" resultMap="publishWithAuthorForPageList">
         select p.*,u.id,u.name,u.avatar_url
@@ -172,11 +123,49 @@
     </select>
     
     
+    
     <!--用户的文章数，个人信息分页-->
     <select id="getTotalCountByCreator" resultType="Integer">
         select count(1)
         from publish
         where creator=#{user.id}
+    </select>
+    
+  
+    <!--结果带上user，打开文章时（评论时获取存在与否信息，这点需要改变、简化）-->
+    <select id="selectByIdWithComments" parameterType="Integer" resultMap="publishWithAuthorAndComment">
+        SELECT pub.*,
+        user1.id id1,user1.name name1,user1.bio bio1,user1.avatar_url avatarUrl1,
+        com.id c_id,
+        com.content c_content,
+        com.parent c_parent,
+        com.like_count c_like_count,
+        com.comment_count c_comment_count,
+        com.gmt_create c_gmt_create,
+        com.gmt_modified c_gmt_modified,
+        com.creator c_creator,
+        user2.id id2,user2.name name2,user2.bio bio2,user2.avatar_url avatarUrl2
+        FROM publish pub
+        LEFT JOIN user user1 ON pub.creator = user1.id
+        LEFT JOIN comment com ON pub.id = com.article
+        LEFT JOIN user user2 ON com.creator = user2.id
+        WHERE pub.id=#{id}
+    </select>
+    
+    
+    
+    <select id="selectByIdWithAuthor" parameterType="Integer" resultMap="publishWithAuthor">
+        select p.*,u.id,u.name,u.bio,u.avatar_url
+        from publish p,user u
+        where p.id = #{id} and u.id=p.creator
+    </select>
+    
+    
+    <!--检测是否存在-->
+    <select id="verify" parameterType="Integer" resultType="Integer">
+        select p.id
+        from publish p
+        where p.id = #{id}
     </select>
     
     
@@ -194,5 +183,43 @@
         set comment_count = comment_count+1,gmt_modified = #{time}
         where id = #{id}
     </select>
+    
+    
+    
+    
+    
+  
+
+    <!--全部文章分页,home页面的列表。再加上分类功能-->
+    <select id="listAllWithUserByPageBySort" resultMap="publishWithAuthorForPageList">
+        select p.*,u.id,u.name,u.avatar_url
+        from publish AS p,user AS u
+        WHERE p.id IN ${sorts}
+        AND p.creator=u.id
+        <if test="order == 1" >
+            order by p.id desc
+        </if>
+        <if test="order == 2" >
+            order by p.id asc
+        </if>
+        <if test="order == 3" >
+            order by gmt_modified desc
+        </if>
+        <if test="order == 4" >
+            order by gmt_modified asc
+        </if>
+        <if test="order == 5" >
+            order by comment_count desc
+        </if>
+        <if test="order == 6" >
+            order by comment_count asc
+        </if>
+        limit #{page},#{size}
+    </select>
+  
+    
+    
+    
+
 
 </mapper>

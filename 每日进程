@@ -175,3 +175,24 @@ postman来检测后台数据是否正确
     有坑，多个线程调用用一个jedis对象，报错B cannot be cast to java.util.List
     服务器性能不好，所以这个错误出现的还蛮频繁
         创建多个有点不太合适....同一个类，多个对象，搞个线程池？ 有这个说法吗？？？？？
+
+
+## test4 test5 做分类的侧边栏。
+
+参数步骤：    @Data
+            public class Jdata {
+                private int id;
+                private String title;
+                private String href;
+                private Jdata[] children;
+            }
+            然后，转json，返给h5页面
+
+            h5，json.parse（）得到data
+
+             layui.use(['tree', 'util'], function(){
+                        var tree = layui.tree
+                            ,layer = layui.layer
+                            ,util = layui.util
+                            //模拟数据1
+                            ,data =得到的data      渲染。再加一些样式控制..勉强可以使用..

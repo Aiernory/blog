@@ -2,28 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <!-- 引入资源 -->
-    <link href="/css/bootstrap.css" rel="stylesheet">
-    <script src="/js/jquery-3.4.1.js"></script>
-    <script src="/js/bootstrap.js"></script>
-    <script src="/js/homePage.js"></script>
 </head>
 
-<div th:replace="~{header::headerBar}"></div>
-<body style="background-color: darkgrey">
-    
-    <div class="row" style="margin-left: 5%;margin-right: 5%;padding-top: 20px;
-        padding-bottom: 20px;background-color: whitesmoke">
-        <!--左右各一格子留白-->
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
-        
-        
-        <!--问题面板-->
-        <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12">
-            
+<div th:insert="header::h5-pre"/>
+<link href="/css/home.css" rel="stylesheet"/>
+
+
+<div class="layui-body" style="margin-top: 60px">
+    <!-- 独特内容 -->
+    <div class="row" style="padding: 15px;">
+        <!--列表-->
+        <div class="col-lg-6 col-md-8 col-sm-10">
             <!--排序导航条-->
             <span>
-                <div style="margin-top: 30px;float:right;">
+                <div style="margin-top: 10px;float:right;">
                 <form action="/home" class="form-inline" id="page-list-order" method="get" th:id="list-order-form">
                     <input hidden="hidden" name="size" th:value="${pageHelper.size}"/>
                     <input hidden="hidden" name="order" th:id="list-order-input" th:value="${pageHelper.order}"/>
@@ -65,43 +57,54 @@
         
                 </form>
             </div>
-                <h2>全部问题</h2>
+                <h2 th:text="${sort!=null}?${sort}:'全部'"></h2>
             </span>
-            
             <!--列表-->
+            
             <ul th:each="article:${pageHelper.publishes}" th:if="${not #lists.isEmpty(pageHelper.publishes)}">
-                <div style="height: 120px; padding: 15px;margin: 20px 0;border: 1px solid #eee;border-radius: 3px;
+                <div style="height: 170px; padding: 10px;margin: 20px;
+                border: 1px solid #eee;border-radius: 3px;
                 border-left-width: 5px; border-left-color: #1b809e;
                 border-top-width: 2px; border-top-color: #66e9ff;
                 border-bottom-width: 1px; border-bottom-color: #0e364a;">
+                    <!--头-->
+                    <h3 class="media-heading">
+                        <a th:href="'/article/'+${article.id}" th:text="${article.title}"/>
+                    </h3>
+                    <hr>
+                    <!--左-->
                     <div class="media-left">
-                        <p>
-                            <a th:href="'/profile/'+${article.author.id}+'/article'">
+                        <a th:href="'/profile/'+${article.author.id}+'/article'">
+                            <p>
                                 <img alt="查看作者专栏" class="img-circle" style="width: 60px;height: 60px"
                                         th:src="${article.author.avatarUrl}">
-                            </a>
-                        </p>
-                        <p>
-                            <a style="font-size: 14px;color: #0095dd;"
-                                    th:href="'/profile/'+${article.author.id}+'/article'"
-                                    th:text="${article.author.name}"/>
-                        </p>
+                            </p>
+                            <p>
+                                    <span aria-hidden="true" class="glyphicon glyphicon-user"
+                                            style="font-size: 12px;color: #0095dd;margin-top: 5px;"
+                                            th:text="${article.author.name}"></span>
+                            </p>
+                        </a>
+                    </div>
+                    <!--右-->
+                    <div class="media-body" id="my-doc-content">
+                        <!--div 限定大小，超出文字省略-->
+                        <p class="my-doc-content" th:text="${article.descriptionDoc}"/>
                     </div>
                     
-                    <div class="media-body">
-                        <h4 class="media-heading"><a th:href="'/article/'+${article.id}" th:text="${article.title}"/>
-                        </h4>
-                        <!--这个到时候添加上预览、悬浮窗预览、一行或者两行限定-->
-                        <div th:text="${article.descriptionDoc}"/>
-                        <span style="font-size: 14px;font-weight: normal;color: #999999" th:text="'创建时间'+${#dates.format(article.gmtCreate,'yy/MM/dd HH:mm')}
+                    <!--脚-->
+                    <div>
+                         <span style="font-size: 14px;font-weight: normal;color: #999999;margin-left: 80px;" th:text="'创建时间'+${#dates.format(article.gmtCreate,'yy/MM/dd HH:mm')}
                                 +' | 最新回复'+${#dates.format(article.gmtModified,'yy/MM/dd HH:mm')}
                                 +' | '+${article.viewCount}
                                 +'次查看 | '+${article.commentCount}
                                 +'条回复 | '+${article.likeCount}+'个赞'"/>
                     </div>
+                
                 </div>
-            </ul>
             
+            
+            </ul>
             <!--分页-->
             <nav aria-label="Page navigation">
                 <!--页标-->
@@ -148,12 +151,13 @@
                 </ul>
             </nav>
         </div>
-        <!--提示信息-->
-        <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10" style="background-color: silver">其他面板</div>
-        <!--左右各一格子留白-->
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+        <!--副面板-->
+        <div class="col-lg-4 col-md-3 col-sm-2" style="background-color: silver"></div>
     </div>
+</div>
+</html>
 
 
-</body>
+
+
 

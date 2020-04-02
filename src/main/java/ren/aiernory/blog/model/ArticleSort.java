@@ -9,18 +9,18 @@ import javax.persistence.Table;
 
 /**
  * @author Aiernory
- * @className: ren.aiernory.blog.model.ArticleLabel
- * @date 2020/3/30 11:32
+ * @className: ren.aiernory.blog.model.ArticleSort
+ * @date 2020/4/1 19:54
  * @Description:
  */
 @Data
-@Table(name = "article_label")
-public class ArticleLabel {
+@Table(name = "article_sort")
+public class ArticleSort {
     
     @Id
     @GeneratedValue(generator = "JDBC")
     private Integer id;
     private Integer pId;
-    private Integer lId;
-
+    private Integer sId;
+    
 }

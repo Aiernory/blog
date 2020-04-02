@@ -1,27 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
     <title>layout 后台大布局 - Layui</title>
-    <link rel="stylesheet" href="/plugins/layui/css/layui.css">
-    <script src="/plugins/layui/layui.js"></script>
-
+    
+    <!-- 通用资源 -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/js/jquery-3.4.1.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script charset="utf-8" src="/plugins/layui/layui.js"></script>
+    <link href="/plugins/layui/css/layui.css" media="all" rel="stylesheet">
 </head>
-<body class="layui-layout-body">
+
+
+<body>
     <div class="layui-layout layui-layout-admin">
         <div class="layui-header">
-            <div class="layui-logo">layui 后台布局</div>
-            
-            
-            
+            <a class="navbar-brand" href="/home">
+                <div class="layui-logo">主页</div>
+            </a>
             <!-- 头部区域（可配合layui已有的水平导航） -->
             <ul class="layui-nav layui-layout-left">
-                <li class="layui-nav-item"><a href="">控制台</a></li>
-                <li class="layui-nav-item"><a href="">商品管理</a></li>
-                <li class="layui-nav-item"><a href="">用户</a></li>
+                <li class="layui-nav-item"><a href="/login/tk1" th:if="${session.user == null}">
+                    获取通用账号登录
+                </a></li>
+                
                 <li class="layui-nav-item">
-                    <a href="javascript:;">其它系统</a>
+                    <a href="javascript:">其它系统</a>
                     <dl class="layui-nav-child">
                         <dd><a href="">邮件管理</a></dd>
                         <dd><a href="">消息管理</a></dd>
@@ -29,75 +35,108 @@
                     </dl>
                 </li>
             </ul>
-            
-            
+            <!--用户中心-->
             <ul class="layui-nav layui-layout-right">
-                <li class="layui-nav-item">
-                    <a href="javascript:;">
-                        <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                        贤心
+                <li class="layui-nav-item" th:if="${session.user == null}">
+                    <a href="/login">登录</a>
+                </li>
+                <li class="layui-nav-item" th:if="${session.user != null}">
+                    <a href="javascript:">
+                        <img class="layui-nav-img" th:src="${session.user.avatarUrl}">
+                        <span th:text="${session.user.name}"></span>
                     </a>
                     <dl class="layui-nav-child">
-                        <dd><a href="">基本资料</a></dd>
-                        <dd><a href="">安全设置</a></dd>
-                    </dl>
+                        <dd><a href="/profile/message">消息</a></dd>
+                        <dd><a href="/profile/article">个人中心</a></dd>
+                <li><a data-target="#logoutModal" data-toggle="modal" href="javascript:void(0)">退出</a></li>
+                
+                </dl>
                 </li>
-                <li class="layui-nav-item"><a href="">退了</a></li>
             </ul>
-            
-        </div>
-        
-        
-        
-        <div class="layui-side layui-bg-black">
-            <div class="layui-side-scroll">
-                
-                
-                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-                <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-                    <li class="layui-nav-item layui-nav-itemed">
-                        <a class="" href="javascript:;">所有商品</a>
-                        <dl class="layui-nav-child">
-                            <dd><a href="javascript:;">列表一</a></dd>
-                            <dd><a href="javascript:;">列表二</a></dd>
-                            <dd><a href="javascript:;">列表三</a></dd>
-                            <dd><a href="">超链接</a></dd>
-                        </dl>
-                    </li>
-                    <li class="layui-nav-item">
-                        <a href="javascript:;">解决方案</a>
-                        <dl class="layui-nav-child">
-                            <dd><a href="javascript:;">列表一</a></dd>
-                            <dd><a href="javascript:;">列表二</a></dd>
-                            <dd><a href="">超链接</a></dd>
-                        </dl>
-                    </li>
-                    <li class="layui-nav-item"><a href="">云市场</a></li>
-                    <li class="layui-nav-item"><a href="">发布商品</a></li>
-                </ul>
+            <!--退出登录模态框-->
+            <div aria-labelledby="mySmallModalLabel" class="modal fade bs-example-modal-sm" id="logoutModal"
+                    role="dialog" tabindex="-1">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <form action="/logout" method="post">
+                            <div class="modal-header">
+                                <h4 class="modal-title">确定退出？</h4>
+                            </div>
+                            <div class="modal-body">
+                                <input checked name="delCookie" type="checkbox">取消自动登录
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-default" data-dismiss="modal" type="button">Close
+                                </button>
+                                <input class="btn btn-info active" type="submit" value="退出登录">
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
         
         
         
-        <div class="layui-body">
-            <!-- 内容主体区域 -->
-            <div style="padding: 15px;">内容主体区域</div>
+        
+        <div class="layui-side layui-bg-cyan">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+    
+                <!--<span style="float: right"><a class="btn btn-primary" th:href="${data0.href}">sort</a></span>-->
+                <!--<a href="javascript:void(0)" th:id="'sort-id-'+${data0.id}" th:text="${data0.title}"/>-->
+                <!--th:href="${data0.href}"-->
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                    <li class="layui-nav-item" th:each="data0:${session.jdata}">
+                       
+                        <a href="javascript:void(0)">
+                            <span th:text="${data0.title}"></span>
+                            <button class="btn my-layui-nav-item" th:href="${data0.href}"
+                            style="padding-top: 3px;padding-right: 3px;padding-bottom: 3px;padding-left: 3px;left: 90px;
+                            background-color:#ffffff00 ;border: 0px;margin-left: 20px"
+                            ><span class="glyphicon glyphicon-search" aria-hidden="true" style="color: #2abfbf"></span></button>
+                        </a>
+                        <dl class="layui-nav-child" th:each="child0:${data0.children}" th:if="${data0.children!=null}">
+                            <dd><a th:href="${child0.href}" th:id="'sort-id-'+${child0.id}" th:text="${child0.title}"/>
+                            </dd>
+                        </dl>
+                    </li>
+                </ul>
+               
+                
+                
+                
+            </div>
         </div>
         
         
+        
+        
+        
+        
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div class="row" style="padding: 15px;">
+            
+            </div>
+        </div>
         <div class="layui-footer">
             <!-- 底部固定区域 -->
             © layui.com - 底部固定区域
         </div>
     </div>
-
-    
     <script>
         //JavaScript代码区域
         layui.use('element', function(){
             var element = layui.element;
         });
+        //分类，单独的跳转
+        $(".my-layui-nav-item").click(function () {
+            location.href=$(this).attr("href");
+        });
     </script>
+
 </body>
+
+
 </html>

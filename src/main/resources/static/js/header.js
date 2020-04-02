@@ -1,8 +1,19 @@
 $(function () {
+
+    //layui
+    //分类，单独的跳转
+    $(".my-layui-nav-item").click(function () {
+        location.href = $(this).attr("href");
+    });
+    //JavaScript代码区域
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+    //end  layui
+
+
     //分页页标的隐藏占位属性
     $(".hideden-placehode").attr("style","visibility:hidden");
-
-
 
 
     //排序导航条相关的

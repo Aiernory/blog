@@ -3,25 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}+'的专栏'"></title>
-    <!-- 引入资源 -->
-    <link href="/css/bootstrap.css" rel="stylesheet">
-    <script src="/js/jquery-3.4.1.js"></script>
-    <script src="/js/bootstrap.js"></script>
-    <script src="/js/homePage.js"></script>
 </head>
 
+<div th:insert="header::h5-pre"/>
 
-<div th:replace="~{header::headerBar}"></div>
-<body style="background-color: darkgrey">
-    
-    <div class="row" style="margin-left: 5%;margin-right: 5%;padding-top: 20px;
-        padding-bottom: 20px;background-color: whitesmoke">
-        <!--左右各一格子留白-->
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
-        
+<div class="layui-body"  style="margin-top: 60px">
+    <!-- 独特内容 -->
+    <div class="row" style="padding: 15px;">
+   
         <!--主面板-->
         <!--article列表-->
-        <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12" th:if="${section=='article'}">
+        <div class="col-lg-6 col-md-8 col-sm-10" th:if="${section=='article'}">
             <h2><span th:text="${sectionName}"></span></h2>
             <div th:if="${not #lists.isEmpty(pageHelper.publishes)}">
                 <!--列表-->
@@ -81,15 +73,16 @@
             </div>
         </div>
         <!--message列表-->
-        <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12" th:if="${section=='message'}">
+        <div class="col-lg-6 col-md-8 col-sm-10" th:if="${section=='message'}">
             <h2><span th:text="${sectionName}"></span></h2>
         </div>
         <!--reply列表-->
-        <div class="col-lg-8 col-md-11 col-sm-12 col-xs-12" th:if="${section=='reply'}">
+        <div class="col-lg-6 col-md-8 col-sm-10" th:if="${section=='reply'}">
             <h2><span th:text="${sectionName}"></span></h2>
         </div>
+    
         <!--副面板-->
-        <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10" style="background-color: silver">
+        <div class="col-lg-4 col-md-3 col-sm-2" style="background-color: silver">
             <div class="list-group">
                 <a class="list-group-item" href="/profile/article"
                         th:classappend="${sectionName=='article'}?'active':''">
@@ -112,9 +105,8 @@
                 </a>
             </div>
         </div>
-        <!--左右各一格子留白-->
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
     </div>
+</div>
+</html>
 
 
-</body>

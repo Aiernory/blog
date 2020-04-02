@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ren.aiernory.blog.mapper.SortMapper">
+    
+    <!--根据名字，获取id-->
+    <select id="getSortId" parameterType="String" resultType="int">
+        select id
+        from sort
+        where name = #{sort}
+    </select>
+    
+    
+    <!--根据s_id获取p_id数组-->
+    <select id="getArticlesBySortId" parameterType="Integer" resultType="Integer">
+        select p_id
+        from article_sort
+        where s_id = #{sortId}
+    </select>
+    
+    <!--一键查询，成为树状表-->
+    
+    <resultMap id="allAsTree" type="ren.aiernory.blog.model.Sort">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="href" property="href"/>
+        <collection property="children" select="getAllAsTree" column="id">
+        </collection>
+    </resultMap>
+    
+    <select id="getAllAsTree" resultMap="allAsTree" parameterType="Integer">
+        select id,name,concat('/sort/',name) as href
+        from sort
+        where parent=#{id}
+    </select>
+    
+
+</mapper>

@@ -28,5 +28,18 @@
         insert into label(name,count)
         VALUES (#{name},#{count})
     </insert>
-
+    
+    
+    
+    <select id="getLabelsByArticleId" parameterType="Integer" resultType="Integer">
+        select l_id
+        from article_label
+        where p_id = #{articleId}
+    </select>
+    
+    <!--insert article_label表-->
+    <insert id="insertToArticleLabel" parameterType="ren.aiernory.blog.model.ArticleLabel">
+        insert into article_label(p_id,l_id)
+        VALUES (#{pId},#{lId})
+    </insert>
 </mapper>

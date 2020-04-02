@@ -2,17 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <!-- 引入资源 -->
-    <link href="/css/bootstrap.css" rel="stylesheet">
-    <script src="/js/jquery-3.4.1.js"></script>
-    <script src="/js/bootstrap.js"></script>
-    <script src="/js/homePage.js"></script>
+    <title text="服务报错"></title>
 </head>
-<div th:replace="~{header::headerBar}"></div>
-<body>
-    <div style="text-align: center" class="jumbotron">
+
+
+<div th:insert="header::h5-pre"/>
+
+<div class="layui-body" style="margin-top: 60px">
+    <!-- 独特内容 -->
+    <div class="jumbotron" style="text-align: center">
         <h1 th:text="${status}">访问不到服务器</h1>
         <p th:text="${message}">问就是服务器崩溃。</p>
         <p><a class="btn btn-primary btn-lg" href="/home" role="button">转到主页</a></p>
     </div>
-</body>
+</div>
+</html>

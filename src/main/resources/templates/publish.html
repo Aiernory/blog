@@ -1,39 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<!--搜索，"未完成"，完善页面-->
 <head>
     <meta charset="UTF-8">
     <title>发布</title>
-    <!-- 引入资源 -->
-    <link href="/css/bootstrap.css" rel="stylesheet">
-    <script src="/js/jquery-3.4.1.js"></script>
-    <script src="/js/bootstrap.js"></script>
-    <!--editorMd-->
-    <link href="/plugins/editor.md-master/css/editormd.preview.css" rel="stylesheet">
-    <link href="/plugins/editor.md-master/css/editormd.css" rel="stylesheet"/>
-    <script src="/plugins/editor.md-master/editormd.js"></script>
-    <script src="/js/editorMdPublish.js"></script>
-    <!--others-->
-    <!--<script src="/js/APlayer.js"></script>-->
-    <!--<link href="/css/APlayer.css" rel="stylesheet">-->
-    <script src="/js/addmusic.js"></script>
 </head>
 
-<div th:replace="~{header::headerBar}"></div>
-<body style="background-color: darkgrey">
-    
-    <div class="row" style="margin-left: 5%;margin-right: 5%;padding-top: 20px;
-        padding-bottom: 20px;background-color: whitesmoke">
-        <!--左右各一格子留白-->
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+<div th:insert="header::h5-pre"/>
+
+<!--editorMd-->
+<link href="/plugins/editor.md-master/css/editormd.preview.css" rel="stylesheet">
+<link href="/plugins/editor.md-master/css/editormd.css" rel="stylesheet"/>
+<script src="/plugins/editor.md-master/editormd.js"></script>
+<script src="/js/editorMdPublish.js"></script>
+<!--others-->
+<script src="/js/addmusic.js"></script>
+
+
+<div class="layui-body"  style="margin-top: 60px">
+    <!-- 独特内容 -->
+    <div class="row" style="padding: 15px;">
+        <!--文章信息-->
+        <div class="col-lg-6 col-md-8 col-sm-10">
         
-        <!--问题面板-->
-        <div class="col-lg-6 col-md-8 col-sm-8 col-xs-8">
-            
-            
+        
             <!--尝试保存内容，现在要去看视频了-->
             <form th:method="${action!='edit'}?'post':'put'" th:action="${action!='edit'}?'/publish':'/publish/edit/'+${article.id}">
-                
+            
                 <!--浅绿色，标题-->
                 <div class="panel panel-success">
                     <div class="panel-body input-group ">
@@ -42,7 +34,7 @@
                                 th:value="${action=='edit'}?${article.title}:''" type="text">
                     </div>
                 </div>
-                
+            
                 <!--浅蓝色，音乐-->
                 <div class="panel panel-info">
                     <!--模态框--><!-- Button trigger modal -->
@@ -67,9 +59,9 @@
                     <button id="clean-music-btn" type="button" class="btn btn-default">清除音乐</button>
                     <!--th:value="${action=='edit'}?${article.title}:''"-->
                     <!--th:text="${article!=null&&article.musicStatus=='1'}?'网易音乐id:'+${article.musicContent}"-->
-                    
-                    
-                    
+                
+                
+                
                     <!--<div  th:text="${action=='edit'&&article.musicStatus!=0&&article.musicStatus==2}?'网易音乐id:'+${article.musicContent}:-->
                     <!--                     '服务器本地音乐:'+${article.musicContent}">未选择音乐-->
                     <!--</div>-->
@@ -84,7 +76,7 @@
                                     </button>
                                     <h4 class="modal-title" id="myModalLabel">上传音乐</h4>
                                 </div>
-                                
+                            
                                 <div class="modal-body">
                                     服务器不大，不要上传太高品质的。。。。
                                 </div>
@@ -138,11 +130,11 @@
                                                 <table class="table table-hover" id="add-music-local-table"
                                                         style="table-layout: fixed"></table>
                                             </div>
-                                        
+                                    
                                         </div>
                                     </div>
                                 </div>
-                                
+                            
                                 <div class="modal-footer">
                                     <button class="btn btn-default" data-dismiss="modal" type="button">关闭</button>
                                     <button class="btn btn-default" data-dismiss="modal" id="add-music-btn"
@@ -151,7 +143,7 @@
                                     <input hidden="hidden" id="add-music-input" name="music" placeholder="null"
                                             type="text">
                                 </div>
-                            
+                        
                             </div>
                         </div>
                     </div>
@@ -161,26 +153,22 @@
                 <div class="panel panel-default" id="out-of-layout">
                     <div th:include="editorPage :: editor-body"></div>
                 </div>
-                
+            
                 <!--红色，资源连接功能，未完成-->
                 <div class="panel panel-danger">
                     资源连接...
                 </div>
                 <input class="btn btn-danger" disabled id="publish-submit" style="float: right"
                         th:value="${action=='edit'}?'更新':'发表'" type="submit"/>
-            
+        
             </form>
-        
+    
         </div>
-        
-        <!--提示信息-->
-        <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10" style="background-color: silver"></div>
-        <!--左右各一格子留白-->
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+        <!--副面板-->
+        <div class="col-lg-4 col-md-3 col-sm-2" style="background-color: silver"></div>
     </div>
+</div>
 
-
-</body>
 </html>
 
 

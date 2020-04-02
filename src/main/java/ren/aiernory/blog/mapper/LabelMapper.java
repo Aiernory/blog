@@ -1,7 +1,10 @@
 package ren.aiernory.blog.mapper;
 
+import ren.aiernory.blog.model.ArticleLabel;
 import ren.aiernory.blog.model.Label;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.List;
 
 /**
  * @author Aiernory
@@ -18,4 +21,9 @@ public interface LabelMapper extends Mapper<Label> {
     
     
     Integer incCount(Integer id);
+    
+    
+    List<Integer> getLabelsByArticleId(Integer articleId);
+    
+    int insertToArticleLabel(ArticleLabel articleLabel);
 }

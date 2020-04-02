@@ -1,0 +1,30 @@
+
+
+
+
+
+/*文章内容预览版*/
+/*标题*/
+.media-heading{
+    padding-left: 30px;
+}
+/*头像*/
+.media-left{
+    border-right-width: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-left: 10px;
+    background-color: #d1eaff;
+}
+/*文字背景*/
+#my-doc-content{
+    background-color: #f0f0f0;
+}
+/*文字控制*/
+#my-doc-content > p {
+    width: 80%;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    margin-left: 30px;
+}

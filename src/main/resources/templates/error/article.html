@@ -1,0 +1,378 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${article.title}"></title>
+    <!-- 通用资源 -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/js/jquery-3.4.1.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script charset="utf-8" src="/plugins/layui/layui.js"></script>
+    <link href="/plugins/layui/css/layui.css" media="all" rel="stylesheet">
+    
+    <!--其他-->
+    <link href="/plugins/editor.md-master/css/editormd.preview.css" rel="stylesheet">
+    <link href="/plugins/editor.md-master/css/editormd.css" rel="stylesheet"/>
+    <script src="/plugins/editor.md-master/editormd.js"></script>
+    <script src="/js/editorMdComment.js"></script>
+    <script src="/js/article.js"></script>
+    <script src="/js/APlayer.js"></script>
+    <link href="/css/APlayer.css" rel="stylesheet">
+    <link href="/css/article.css" rel="stylesheet"/>
+</head>
+
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <a class="navbar-brand" href="/home">
+                <div class="layui-logo">主页</div>
+            </a>
+            <!-- 头部区域（可配合layui已有的水平导航） -->
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item"><a href="/login/tk1" th:if="${session.user == null}">
+                    获取通用账号登录
+                </a></li>
+                
+                <li class="layui-nav-item">
+                    <a href="javascript:">其它系统</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="">邮件管理</a></dd>
+                        <dd><a href="">消息管理</a></dd>
+                        <dd><a href="">授权管理</a></dd>
+                    </dl>
+                </li>
+            </ul>
+            <!--用户中心-->
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item" th:if="${session.user == null}">
+                    <a href="/login">登录</a>
+                </li>
+                <li class="layui-nav-item" th:if="${session.user != null}">
+                    <a href="javascript:">
+                        <img class="layui-nav-img" th:src="${session.user.avatarUrl}">
+                        <span th:text="${session.user.name}"></span>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="/profile/message">消息</a></dd>
+                        <dd><a href="/profile/article">个人中心</a></dd>
+                <li><a data-target="#logoutModal" data-toggle="modal" href="javascript:void(0)">退出</a></li>
+                
+                </dl>
+                </li>
+            </ul>
+            <!--退出登录模态框-->
+            <div aria-labelledby="mySmallModalLabel" class="modal fade bs-example-modal-sm" id="logoutModal"
+                    role="dialog" tabindex="-1">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <form action="/logout" method="post">
+                            <div class="modal-header">
+                                <h4 class="modal-title">确定退出？</h4>
+                            </div>
+                            <div class="modal-body">
+                                <input checked name="delCookie" type="checkbox">取消自动登录
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-default" data-dismiss="modal" type="button">Close
+                                </button>
+                                <input class="btn btn-info active" type="submit" value="退出登录">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-side layui-bg-cyan">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                    <li class="layui-nav-item layui-nav-itemed" th:each="data0:${session.jdata}">
+                        <a th:href="${data0.href}" th:id="'sort-id-'+${data0.id}" th:text="${data0.title}"/>
+                        <dl class="layui-nav-child" th:each="child0:${data0.children}" th:if="${data0.children!=null}">
+                            <dd><a th:href="${child0.href}" th:id="'sort-id-'+${child0.id}" th:text="${child0.title}"/>
+                            </dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div class="row" style="padding: 15px;">
+             
+                <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12"
+                        style="background-color: #c9f3ff;margin-left: 30px;padding-top: 20px">
+                    <!--主面板-->
+                    <div class="panel panel-default my-main-panel ">
+                        <!--标题版-->
+                        <div class="panel-heading">
+                            <!--标题-->
+                            <h3 th:text="${article.title}"/>
+                            <!--编辑按钮\状态栏-->
+                            <div>
+                <span>
+                   <a th:href="'/publish/edit/'+${article.id}"
+                           th:if="${session.user!=null && session.user.id==article.author.id}">
+                       <span aria-hidden="true" class="glyphicon glyphicon-pencil"/>
+                       编辑
+                   </a>
+                </span>
+                                <span style="font-size: 14px;font-weight: normal;color: #999999" th:text="${article.viewCount}+'次查看 | '
+                +${article.commentCount}+'条回复 | '
+                +${article.likeCount}+'个赞'+' | '
+                +'创建时间'+${#dates.format(article.gmtCreate,'yy/MM/dd HH:mm')}+' | '
+                +'最新回复'+${#dates.format(article.gmtModified,'yy/MM/dd HH:mm')}+' | '"/>
+                            </div>
+                        </div>
+                        <!--正文版-->
+                        <div class="panel-body" style="padding: 30px;">
+                            <!--音乐占位栏-->
+                            <div class="demo" th:if="${article.musicStatus!=0}">
+                                <p><strong>aplayer音乐播放器</strong></p>
+                                <div class="aplayer" id="player1">
+                    <pre class="aplayer-lrc-content">
+                    </pre>
+                                </div>
+                                <div hidden="hidden" id="Aplayer-music-msg"
+                                        th:text="${article.musicStatus}+'/*-'+${article.musicContent}+'/*-'+${musicPath}"/>
+                                <!--音乐渲染-->
+                                <script>
+                                    let music_msg = $("#Aplayer-music-msg").html();
+                                    let musicUrl;
+                                    let split = music_msg.split("/*-");
+                                    let ap;
+                                    if (split[0] == "1") {
+                                        musicUrl = "http://music.163.com/song/media/outer/url?id=" + split[1];
+                                        ap = new APlayer
+                                        ({
+                                            element: document.getElementById('player1'),
+                                            narrow: false,
+                                            autoplay: false,
+                                            music: {
+                                                title: '网易音乐',
+                                                author: 'id:' + split[1],
+                                                url: musicUrl,
+                                            }
+                                        });
+                                    } else if (split[0] == "2") {
+                                        musicUrl = split[2] + split[1];
+                                        ap = new APlayer
+                                        ({
+                                            element: document.getElementById('player1'),
+                                            narrow: false,
+                                            autoplay: false,
+                                            music: {
+                                                title: '本地音乐',
+                                                author: split[1],
+                                                url: musicUrl,
+                                            }
+                                        });
+                                    }
+                                    ap.init();
+                                </script>
+                            </div>
+                            
+                            <!--md显示栏-->
+                            <div id="article-content" th:utext="${article.descriptionCode}"></div>
+                            <!--需要边框修改一下...-->
+                        </div>
+                        
+                        
+                        <!--标签-->
+                        <div class="my-label-panel panel panel-default">
+                            <div class="panel-heading"><span id="label-search-area">标签:</span></div>
+                            <div class="panel-body">
+                                <!--自定义标签区域-->
+                                
+                                <button aria-label="Left Align" class="btn btn-default label-area-btn-add"
+                                        type="button">
+                                    <span aria-hidden="true" class="glyphicon glyphicon-tags"
+                                            style="color: #1baebd"></span>
+                                    <span class="label-area-btn-span">添加标签</span>
+                                </button>
+                                <!--隐藏的可复用标签-->
+                                <span hidden id="session-user-for-js"
+                                        th:text="${session.user==null}?'':${session.user.id}">用户user id</span>
+                                <span hidden id="label-area-articleId" th:text="${article.id}">文章id</span>
+                                <input hidden id="label-area-input-add" type="text"/>
+                                <span class="label-area-temp-heart" style="display: none;">
+                        <span aria-hidden="true" class="glyphicon glyphicon-heart"></span>
+                    </span>
+                            </div>
+                        </div>
+                        
+                        <!--作者的信息-->
+                        <div class="panel panel-default my-author-panel">
+                            <div class="panel-heading">
+                                作者:
+                                <span>
+                        <a style="font-size: 14px;color: #0095dd;" th:href="'/profile/'+${article.author.id}+'/article'"
+                                th:text="${article.author.name}"></a>
+                    </span>
+                            </div>
+                            <div class="panel-body">
+                                <!--作者的信息-->
+                                <div class="media">
+                                    <!--左侧的头像-->
+                                    <div class="media-left">
+                                        <p>
+                                            <a th:href="'/profile/'+${article.author.id}+'/article'">
+                                                <img alt="用户头像" class="media-object" style="height: 60px;width: 60px"
+                                                        th:src="${article.author.avatarUrl}">
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <!--评论内容-->
+                                    <div class="media-body">
+                                        <div th:utext="${article.author.bio}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    </div>
+                    
+                    <!--评论，这东西也需要分页，ajax动态获取-->
+                    
+                    <!--先部分也，全部获取-->
+                    <div class="panel panel-default" id="comment-list-div">
+                        <div class="panel-heading">
+                            <h3 class="panel-title" th:text="${article.commentCount}+'个回复'">Panel title</h3>
+                        </div>
+                        <div class="panel-body">
+                            <!--评论列表面板-->
+                            
+                            <ul class="list-group">
+                                <li class="list-group-item comment-list-li "
+                                        th:each="comment,commentState:${article.comments}"
+                                        th:id="'comment-id-'+${comment.id}"
+                                        th:if="${not #lists.isEmpty(article.comments)}">
+                                <span style="font-size: 25px;right: 5px;float: right;color: #00acef;user-select: none;position: absolute;"
+                                        th:text="'#'+${commentState.count}"> </span>
+                                    <div class="media">
+                                        <!--左侧的头像-->
+                                        <div class="media-left">
+                                            <p>
+                                                <a th:href="'/profile/'+${comment.author.id}+'/article'">
+                                                    <img alt="用户头像" class="media-object"
+                                                            style="height: 60px;width: 60px"
+                                                            th:src="${comment.author.avatarUrl}">
+                                                </a>
+                                            </p>
+                                            <p>
+                                                <a style="font-size: 14px;color: #0095dd;"
+                                                        th:href="'/profile/'+${comment.author.id}+'/article'"
+                                                        th:text="${comment.author.name}"></a>
+                                            </p>
+                                        </div>
+                                        <!--评论内容-->
+                                        <div class="media-body">
+                                            
+                                            <div class="my-comment-content" th:utext="${comment.content}"></div>
+                                            <div>
+                                                <span th:text="${#dates.format(comment.gmtModified,'yy/MM/dd HH:mm')}">评论时间 </span>
+                                                <span> <button class="btn btn-info show-input-comment"
+                                                        th:id="'show-input-comment-'+${comment.id}"
+                                                        th:if="${session.user!=null}" type="button">评论Ta</button></span>
+                                            </div>
+                                        </div>
+                                        <!--子面板位置1-->
+                                        <ul class="list-group" th:if="${comment.childComment!=null}">
+                                            <li class="list-group-item comment-list-child-li"
+                                                    th:each="childComment,childCommentState:${comment.childComment}"
+                                                    th:id="'child-comment-id-'+${childComment.id}"
+                                                    th:if="${not #lists.isEmpty(comment.childComment)}">
+                                                <div class="modal-body">
+                                               <span style="font-size: 15px;right: 0px;float: right;color: #07d1ff;user-select: none;position: absolute;"
+                                                       th:text="'@'+${childCommentState.count}"> </span>
+                                                    <div class="media">
+                                                        <!--左侧的头像-->
+                                                        <div class="media-left">
+                                                            <p>
+                                                                <a th:href="'/profile/'+${childComment.author.id}+'/article'">
+                                                                    <img alt="用户头像" class="media-object"
+                                                                            style="height: 50px;width: 50px"
+                                                                            th:src="${childComment.author.avatarUrl}">
+                                                                </a>
+                                                            </p>
+                                                            <p>
+                                                                <a style="font-size: 12px;color: #0095dd;"
+                                                                        th:href="'/profile/'+${childComment.author.id}+'/article'"
+                                                                        th:text="${childComment.author.name}"></a>
+                                                            </p>
+                                                        </div>
+                                                        <!--评论内容-->
+                                                        <div class="media-body">
+                                                            <div class="my-childComment-content"
+                                                                    th:utext="${childComment.content}"></div>
+                                                            <div>
+                                                                <span th:text="${#dates.format(childComment.gmtModified,'yy/MM/dd HH:mm')}">评论时间 </span>
+                                                                <span> <button
+                                                                        class="btn btn-info show-input-child-comment"
+                                                                        th:id="'show-input-comment-'+${childComment.id}"
+                                                                        th:if="${session.user!=null}"
+                                                                        type="button">评论Ta</button></span>
+                                                                <!--<span>点赞算了吧</span>-->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <!--子面板位置2-->
+                                    <!--子面板位置3-->
+                                
+                                </li>
+                            </ul>
+                        
+                        
+                        </div>
+                    
+                    </div>
+                    <!--评论框框-->
+                    
+                    
+                    <div id="comment-input-dialog" th:if="${session.user!=null}">
+                        <!--在这里得到ajax需要的data-->
+                        <span>
+                        <img class="img-rounded" style="height: 40px;width: 40px" th="我的头像"
+                                th:src="${session.user.avatarUrl}">
+                        <span th:text="${session.user.name}"></span>
+                    </span>
+                        <!--需要传递的信息有：评论人id，评论内容，所属文章，子评论与否信息-->
+                        <form id="comment-editormd">
+                            <!--评论人id-->
+                            <input hidden name="creator" th:value="${session.user.id}" type="text">
+                            <!--文章id-->
+                            <input hidden name="article" th:value="${article.id}" type="text">
+                            <!--parent-->
+                            <input hidden name="parent" type="text" value="-1">
+                            
+                            <!--是否子评论，这个位置的默认不是子评论，值取-1-->
+                            <!--markdown插件-->
+                            <!--评论内容-->
+                            <div th:include="editorPage :: editor-body"></div>
+                            <button class="btn btn-danger" disabled id="submit-comment-editormd" type="button">发表评论
+                            </button>
+                            <button class="btn  btn-info show-input-article" type="button">返回文章评论</button>
+                        </form>
+                    </div>
+                
+                </div>
+                <!--副面板-->
+                <div class="col-lg-2 col-md-10 col-sm-10 col-xs-10" style="background-color: silver">
+                
+                
+                </div>
+                
+            </div>
+        </div>
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            © layui.com - 底部固定区域
+        </div>
+    </div>
+</body>

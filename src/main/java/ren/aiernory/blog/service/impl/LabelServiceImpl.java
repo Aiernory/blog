@@ -1,7 +1,6 @@
 package ren.aiernory.blog.service.impl;
 
 import org.springframework.stereotype.Service;
-import ren.aiernory.blog.mapper.ArticleLabelMapper;
 import ren.aiernory.blog.mapper.LabelMapper;
 import ren.aiernory.blog.model.ArticleLabel;
 import ren.aiernory.blog.model.Label;
@@ -23,15 +22,13 @@ public class LabelServiceImpl implements LabelService {
     
     @Resource
     private LabelMapper labelMapper;
-    @Resource
-    private ArticleLabelMapper articleLabelMapper;
-    
+  
     
     //持久化一个文章的标签
     @Override
     public int addArticleLabel(Integer articleId, String labelName) {
         ArticleLabel articleLabel = new ArticleLabel();
-        articleLabel.setArticleId(articleId);
+        articleLabel.setPId(articleId);
         
    
         Integer id = labelMapper.checkName(labelName);
@@ -49,8 +46,8 @@ public class LabelServiceImpl implements LabelService {
             labelMapper.incCount(id);
         }
         //拿到了id
-        articleLabel.setLabelId(id);
-        return articleLabelMapper.insertSelective(articleLabel);
+        articleLabel.setLId(id);
+        return labelMapper.insertToArticleLabel(articleLabel);
     }
     
  
@@ -60,7 +57,7 @@ public class LabelServiceImpl implements LabelService {
     public List<String> getLabelNameByArticleId(Integer articleId) {
         List<String> names = new ArrayList<>();
         
-        List<Integer> labelsId = articleLabelMapper.getLabelsByArticleId(articleId);
+        List<Integer> labelsId = labelMapper.getLabelsByArticleId(articleId);
         labelsId.forEach(
                 id -> {
                     names.add(this.getNameById(id));

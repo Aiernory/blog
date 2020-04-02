@@ -1,6 +1,5 @@
 package ren.aiernory.blog.controller;
 
-import com.mysql.cj.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -8,16 +7,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ren.aiernory.blog.dto.AccessToken;
 import ren.aiernory.blog.dto.GithubUser;
+import ren.aiernory.blog.mapper.SortMapper;
 import ren.aiernory.blog.model.User;
+import ren.aiernory.blog.model.Sort;
 import ren.aiernory.blog.provider.GithubProvider;
 import ren.aiernory.blog.service.UserService;
 import ren.aiernory.blog.tool.CookieLogin;
 
+import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -183,4 +184,23 @@ public class AuthorizeController {
         }
         return "redirect:"+referer;
     }
+    
+    
+    @Resource
+    SortMapper sortMapper;
+    
+    @GetMapping("/autoCheck")
+    public String autoCheck(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.setAttribute("state",1);
+        //分类对象。启动时直接创建比较好...
+    
+        Sort allAsTree = sortMapper.getAllAsTree(-1);
+        
+        session.setAttribute("sidebar",allAsTree);
+        cookieLogin.cookieVerify(request);
+        referer = request.getHeader("referer");
+        return "redirect:"+referer;
+    }
+    
 }

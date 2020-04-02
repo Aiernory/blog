@@ -1,81 +1,122 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
-<!-- 引入资源 -->
-<link href="/css/bootstrap.css" rel="stylesheet">
-<script src="/js/jquery-3.4.1.js"></script>
-<script src="/js/bootstrap.js"></script>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+    <title>layout 后台大布局 - Layui</title>
+</head>
 
-
-<nav class="navbar navbar-default" th:fragment="headerBar">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button aria-expanded="false" class="navbar-toggle collapsed" data-target="#bs-example-navbar-collapse-1"
-                    data-toggle="collapse" type="button">
-                <span class="sr-only">top固定栏</span>
-            </button>
-            <a class="navbar-brand" href="/home">主页</a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form class="navbar-form navbar-left">
-                <div class="form-group">
-                    <input class="form-control" placeholder="搜索话题" type="text">
-                </div>
-                <button class="btn btn-default" type="submit">搜索</button>
-            </form>
-            <a th:if="${session.user == null}" href="/login/tk1">
-                获取通用账号登录
-            </a>
-            
-            <ul class="nav navbar-nav navbar-right">
-                
-                <li th:if="${session.user != null}">
+<div th:fragment="h5-pre">
+    <!-- 通用资源 -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/js/jquery-3.4.1.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script charset="utf-8" src="/plugins/layui/layui.js"></script>
+    <link href="/plugins/layui/css/layui.css" media="all" rel="stylesheet">
+    <script src="/js/header.js"></script>
+    
+    
+    <!--目的，在第一次建立连接时，读取侧边栏、自动检测cookie登录-->
+    <!--要怎么完成？首先有个标志，标识尚未完成前两者。
+       当完成了前两者，改变标识。这个标识，对客户端应该是静态的、唯一的。session中state字段，null时，发送。-->
+    <div hidden="hidden" id="session-state" th:text="${session.state==null}?'0':'1'">1</div>
+    <script>
+        if ($("#session-state").html() == 0) {
+            location.href = "/autoCheck";
+        }
+    </script>
+    <!--state 不存在时，为0.js查到这个0.发送cookie检测请求，同时完成侧边栏数据准备。给state设定值，返回之前请求的页面。js再次检测已经有值。不在触发-->
+    
+    
+    <body>
+        <div class="layui-layout layui-layout-admin">
+            <div class="layui-header">
+                <a class="navbar-brand" href="/home">
+                    <div class="layui-logo">主页</div>
+                </a>
+                <!-- 头部区域（可配合layui已有的水平导航） -->
+                <ul class="layui-nav layui-layout-left">
+                    <li class="layui-nav-item"><a href="/login/tk1" th:if="${session.user == null}">
+                        获取通用账号登录
+                    </a></li>
                     
-                    <a href="/publish"><span aria-hidden="true" class="glyphicon glyphicon-pencil"></span>发表</a>
-                </li>
-                <li th:if="${session.user == null}">
-                    <a href="/login">登录</a>
-                </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:">其它系统</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="">邮件管理</a></dd>
+                            <dd><a href="">消息管理</a></dd>
+                            <dd><a href="">授权管理</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+                <!--用户中心-->
+                <ul class="layui-nav layui-layout-right">
+                    <li class="layui-nav-item" th:if="${session.user != null}">
+                        <a href="/publish">
+                            <span aria-hidden="true" class="glyphicon glyphicon-pencil"></span>
+                            发表
+                        </a>
+                    </li>
+                    <li class="layui-nav-item" th:if="${session.user == null}">
+                        <a href="/login">登录</a>
+                    </li>
+                    <li class="layui-nav-item" th:if="${session.user != null}">
+                        <a href="javascript:">
+                            <img class="layui-nav-img" th:src="${session.user.avatarUrl}">
+                            <span th:text="${session.user.name}"></span>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="/profile/message">消息</a></dd>
+                            <dd><a href="/profile/article">个人中心</a></dd>
+                    <li><a data-target="#logoutModal" data-toggle="modal" href="javascript:void(0)">退出</a></li>
+                </ul>
                 
-                <li class="dropdown" th:if="${session.user != null}">
-                    <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown"
-                            href="#" role="button" style="padding: 5px">
-                            <span><img alt="查看作者专栏" class="img-circle" style="width: 40px;height: 40px"
-                                    th:src="${session.user.avatarUrl}"></span>
-                        <span th:text="${session.user.name}"></span>
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/profile/message">消息</a></li>
-                        <li><a href="/profile/article">个人中心</a></li>
-                        <li><a href="javascript:void(0)" data-target="#logoutModal" data-toggle="modal">退出登录</a></li>
-                    </ul>
-                    <!--退出登录模态框-->
-                    <div aria-labelledby="mySmallModalLabel" class="modal fade bs-example-modal-sm" id="logoutModal"
-                            role="dialog" tabindex="-1">
-                        <div class="modal-dialog modal-sm" role="document">
-                            <div class="modal-content">
-                                <form action="/logout" method="post">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">确定退出？</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input checked name="delCookie" type="checkbox">取消自动登录
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-default" data-dismiss="modal" type="button">Close
-                                        </button>
-                                        <input class="btn btn-info active" type="submit" value="退出登录">
-                                    </div>
-                                </form>
-                            </div>
+                <!--退出登录模态框-->
+                <div aria-labelledby="mySmallModalLabel" class="modal fade bs-example-modal-sm" id="logoutModal"
+                        role="dialog" tabindex="-1">
+                    <div class="modal-dialog modal-sm" role="document">
+                        <div class="modal-content">
+                            <form action="/logout" method="post">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">确定退出？</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <input checked name="delCookie" type="checkbox">取消自动登录
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-default" data-dismiss="modal" type="button">Close
+                                    </button>
+                                    <input class="btn btn-info active" type="submit" value="退出登录">
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </li>
-            </ul>
+                </div>
+            </div>
+            <div class="layui-side layui-bg-cyan">
+                <div class="layui-side-scroll">
+                    <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                    <ul class="layui-nav layui-nav-tree" lay-filter="test" th:if="${session.sidebar!=null}">
+                        <li class="layui-nav-item" th:each="bar1:${session.sidebar.children}">
+                            <a href="javascript:void(0)">
+                                <span th:text="${bar1.name}"></span>
+                                <button class="btn my-layui-nav-item" style="padding-top: 3px;padding-right: 3px;padding-bottom: 3px;
+                                        padding-left: 3px;left: 90px;background-color:#ffffff00 ;border: 0px;margin-left: 20px"
+                                        th:href="${bar1.href}">
+                                    <span aria-hidden="true" class="glyphicon glyphicon-search"
+                                            style="color: #2abfbf"></span>
+                                </button>
+                            </a>
+                            <dl class="layui-nav-child" th:each="bar2:${bar1.children}" th:if="${bar1.children!=null}">
+                                <dd><a th:href="${bar2.href}" th:text="${bar2.name}"/>
+                                </dd>
+                            </dl>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
-</nav>
-
+    </body>
+</div>
+</html>
 

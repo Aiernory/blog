@@ -22,36 +22,19 @@
     <link href="/plugins/Hermit-X-master/assets/css/APlayer.min.css" rel="stylesheet">
     <!--<link href="/plugins/Hermit-X-master/assets/css/APlayer.min.css" rel="stylesheet">-->
     <!--<link href="/plugins/Hermit-X-master/assets/css/" rel="stylesheet">-->
-    <div th:include="index"></div>
+
 </head>
 
 <body>
-    <div class="demo">
-        <p><strong>自制音乐播放器</strong></p>
-        <div class="aplayer" id="player1">
-        <pre class="aplayer-lrc-content">
-            
-            </pre>
+    <div th:insert="up::up"></div>
+    
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div class="row" style="padding: 15px;">
+        dasjifnaiogn esjigns jdslnfbdsf;kl
         </div>
     </div>
+    <div th:insert="down::down"></div>
     
-    <script>
-
-
-        var ap = new APlayer
-        ({
-            element: document.getElementById('player1'),
-            narrow: false,
-            autoplay: true,
-            showlrc: true,
-            music: {
-                title: '遇见',
-                author: '孙燕姿',
-                url: 'https://s3.music.126.net/web/s/pt_frame_index_de57b99aed204f289ec8356d1c7b0494.js?de57b99aed204f289ec8356d1c7b0494',
-                pic: ''
-            }
-        });
-        ap.init();
-    </script>
 </body>
 
