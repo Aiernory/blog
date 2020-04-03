@@ -159,6 +159,7 @@ $(function () {
             $.each(data, function (key, value) {
                 let i_btn = labelNoSearch.clone();
                 i_btn.children(".label-area-btn-span").html(key);
+
                 i_btn.children(".label-area-temp-heart").children().prop("id", "heart-" + key);
                 i_btn.children(".label-area-temp-heart").children().html(value);
                 i_btn.insertBefore(".label-area-btn-add");
@@ -243,7 +244,10 @@ $(function () {
             success: function (data) {
                 $.each(data, function (key, value) {
                     if (value == 1) {
-                        $("#heart-" + key).addClass("user-label-like")
+                        //原来：  $("#heart-" + key).addClass("user-label-like")
+                        //修改后服务器上应该也可以了
+                        $(".label-area-temp-heart > span[id='heart-"+key+"'] ").addClass("user-label-like");
+
                     }
                 })
             },

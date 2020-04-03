@@ -10,7 +10,7 @@
     </parent>
     <groupId>ren.aiernory</groupId>
     <artifactId>blog</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.0.5-SNAPSHOT</version>
     <name>blog</name>
     <description>blog</description>
     <packaging>jar</packaging>
@@ -111,13 +111,14 @@
         </dependency>
         
         
-        
-    <!--查看java对象内存的工具包-->
-        <dependency>
-            <groupId>org.openjdk.jol</groupId>
-            <artifactId>jol-core</artifactId>
-            <version>0.9</version>
-        </dependency>
+
+    <!--&lt;!&ndash;查看java对象内存的工具包&ndash;&gt;-->
+    <!--    <dependency>-->
+    <!--        <groupId>org.openjdk.jol</groupId>-->
+    <!--        <artifactId>jol-core</artifactId>-->
+    <!--        <version>0.9</version>-->
+    <!--    </dependency>-->
+    
     </dependencies>
     
     <build>

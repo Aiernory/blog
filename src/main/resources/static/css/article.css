@@ -12,14 +12,12 @@
     margin-left: 10px;
     margin-right: 10px;
     margin-top: 20px;
-
 }
 
 .my-label-panel .panel-body {
 
     padding-top: 10px;
     padding-bottom: 10px;
-
 }
 
 /*临时标签的心形颜色*/
@@ -91,33 +89,31 @@
     margin-left: 2.5%;
     padding: 5px;
     width: 95%;
-
 }
 .my-comment-content{
     width: 90%;
-    height: 120px;
+    height: 100px;
     display: -webkit-box;
-    padding-bottom: 10px;
+    padding-bottom: 20px;
     padding-left: 10px;
 
     -webkit-line-clamp: 4;
     overflow: hidden;
     text-overflow:ellipsis;
 }
+
 .my-childComment-content{
     width: 90%;
     height: 90px;
     display: -webkit-box;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 
     -webkit-line-clamp: 3;
     overflow: hidden;
     text-overflow:ellipsis;
     padding-right: 10px;
     margin-right: 10px;
-
 }
-
 
 .comment-list-li .list-group{
     margin-bottom: 0px;
