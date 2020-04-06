@@ -61,7 +61,7 @@
             </span>
             <!--列表-->
             
-            <ul th:each="article:${pageHelper.publishes}" th:if="${pageHelper!=null}&&${not #lists.isEmpty(pageHelper.publishes)}">
+            <ul th:each="article:${pageHelper.publishes}" th:if="${pageHelper!=null} and ${not #lists.isEmpty(pageHelper.publishes)}">
                 <div style="height: 170px; padding: 10px;margin: 20px;
                 border: 1px solid #eee;border-radius: 3px;
                 border-left-width: 5px; border-left-color: #1b809e;

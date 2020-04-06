@@ -172,7 +172,7 @@ public class PublishServiceImpl implements PublishService {
                 page = 1;
             }
             //in （） 操作，sql不能容这个错误，多一步判断
-            if(ids.size()>1){
+            if(ids.size()>0){
                 String articles = ids.toString().replace('[', '(').replace(']', ')');
                 publishes = publishMapper.listPageBySelect((page - 1) * size, size, order, articles);
             }else {
