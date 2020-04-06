@@ -17,5 +17,13 @@ import java.util.List;
  */
 
 public interface SortService {
-    PageHelper listBySort(Integer page, Integer size, Integer order, String sort);
+
+    
+    /**
+     * 创建文章时，插入sorts信息
+     * @param pId   文章id
+     * @param sorts 分类，list列表
+     * @return
+     */
+    int addArticleSort(int pId, List<Integer> sorts);
 }

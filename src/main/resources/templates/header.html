@@ -7,8 +7,9 @@
 </head>
 
 <div th:fragment="h5-pre">
+    <!--检测-->
+    <div hidden="hidden" id="session-state" th:text="${session.state==null}?'0':'1'">1</div>
     <!-- 通用资源 -->
-
     <script src="/js/jquery-3.4.1.js"></script>
     <link href="/css/bootstrap.css" rel="stylesheet">
     <script src="/js/bootstrap.js"></script>
@@ -22,7 +23,7 @@
     <!--目的，在第一次建立连接时，读取侧边栏、自动检测cookie登录-->
     <!--要怎么完成？首先有个标志，标识尚未完成前两者。
        当完成了前两者，改变标识。这个标识，对客户端应该是静态的、唯一的。session中state字段，null时，发送。-->
-    <div hidden="hidden" id="session-state" th:text="${session.state==null}?'0':'1'">1</div>
+ 
     <script>
         if ($("#session-state").html() == 0) {
             location.href = "/autoCheck";
@@ -35,14 +36,24 @@
         <div class="layui-layout layui-layout-admin">
             <div class="layui-header">
                 <a class="navbar-brand" href="/home">
-                    <div class="layui-logo">主页</div>
+                    <div class="layui-logo">主页（显示全部）</div>
                 </a>
                 <!-- 头部区域（可配合layui已有的水平导航） -->
                 <ul class="layui-nav layui-layout-left">
+                    
                     <li class="layui-nav-item"><a href="/login/tk1" th:if="${session.user == null}">
                         点一下，直接登录。通用的无信息账号。
                     </a></li>
-                    
+                    <li class="layui-nav-item">
+                        <a href="javascript:"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></a>
+                        <dl class="layui-nav-child" >
+                            <dd class="form-inline" style="margin: 30px;color:#333">
+                                <input class="form-control" id="header-search-input" placeholder="请输入标题" type="text">
+                                <button class="btn btn-info" id="header-search-btn" type="button">查询</button>
+                                <input type="checkbox" id="header-search-box" checked=checked>包括标签
+                            </dd>
+                        </dl>
+                    </li>
                     <li class="layui-nav-item">
                         <a href="javascript:">其它系统</a>
                         <dl class="layui-nav-child">

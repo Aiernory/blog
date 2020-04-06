@@ -19,29 +19,13 @@ import java.util.List;
 @Service
 public class SortServiceImpl implements SortService {
     
-    @Resource
-    private PublishMapper publishMapper;
+
     @Resource
     private SortMapper sortMapper;
-    
+  
     @Override
-    public PageHelper listBySort(Integer page, Integer size, Integer order, String sort) {
-        
-        //根据sort查询到一个publish的id数组
-        int sortId = sortMapper.getSortId(sort);
-        List<Integer> articles = sortMapper.getArticlesBySortId(sortId);
-        
-        int totalCount=articles.size();
-        
-        PageHelper pageHelper = new PageHelper();
-        pageHelper.setCurrentPage(page);
-        pageHelper.setSize(size);
-        pageHelper.setOrder(order);
-        pageHelper.setPageList(totalCount);
-        String articlesString = articles.toString().replace('[', '(').replace(']', ')');
-        List<Publish> publishes = publishMapper.listAllWithUserByPageBySort((page - 1) * size, size, order,articlesString);
-        pageHelper.setPublishes(publishes);
-        return pageHelper;
-        
+    public int addArticleSort(int pId, List<Integer> sorts){
+        return sortMapper.insertToArticleSort(pId,sorts);
     }
+    
 }

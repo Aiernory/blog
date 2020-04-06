@@ -1,6 +1,8 @@
 package ren.aiernory.blog.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -10,11 +12,14 @@ import ren.aiernory.blog.enums.ErrorCodeEnum;
 import ren.aiernory.blog.mapper.LabelMapper;
 import ren.aiernory.blog.model.Publish;
 
+import ren.aiernory.blog.model.Sort;
 import ren.aiernory.blog.resultMessage.ErrorMessage;
 import ren.aiernory.blog.service.PublishService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Aiernory
@@ -24,7 +29,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class test {
-    @Autowired
+    //制定了bean名称，按名称注入。
+    @Resource
     private Jedis myJedis;
     @Resource
     private LabelMapper labelMapper;
@@ -59,9 +65,41 @@ public class test {
         return "test";
     }
     
-    @RequestMapping("test2")
-    String test2() {
+    @GetMapping("test2")
+    String test2()
+    {
+
         return "test2";
+    }
+    @PostMapping("test2")
+    String posttest2(@RequestBody String body)
+    {
+       
+        System.out.println(body);
+        //body = "{"+body+"}";
+        JSONArray array = JSONObject.parseArray(body);
+        array.forEach(a->{
+            System.out.println(a);
+        });
+        Sort[] sorts = new Sort[0];
+        Sort[] sorts1 = array.toArray(sorts);
+        Sort[] objects = (Sort[]) array.toArray();
+        List<Integer> ids = new ArrayList();
+        for (int i = 0; i < objects.length; i++) {
+            ids.add(objects[i].getId());
+            if(objects[i].getChildren()!=null){
+                objects[i].getChildren().forEach(s->{
+                    ids.add(s.getId());
+                });
+            }
+        }
+    
+        System.out.println(ids);
+        
+        System.out.println(array);
+        return "test2";
+    //  [{"title":"一级2","id":2,"field":"","spread":true,"children":[{"title":"二级2-1","id":5,"field":"","spread":true}                                     ]}]
+    //  [{"title":"一级2","id":2,"field":"","spread":true,"children":[{"title":"二级2-1","id":5,"field":"","spread":true},{"title":"二级2-2","id":6,"field":""}]}]
     }
     
     @RequestMapping("test1")

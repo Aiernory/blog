@@ -8,7 +8,7 @@
 <link href="/css/home.css" rel="stylesheet"/>
 
 
-<div class="layui-body" style="margin-top: 60px">
+<div class="layui-body" style="margin-top: 60px" th:if="${pageHelper!=null}">
     <!-- 独特内容 -->
     <div class="row" style="padding: 15px;">
         <!--列表-->
@@ -16,7 +16,7 @@
             <!--排序导航条-->
             <span>
                 <div style="margin-top: 10px;float:right;">
-                <form action="/home" class="form-inline" id="page-list-order" method="get" th:id="list-order-form">
+                <form th:if="${pageHelper!=null}" action="#" class="form-inline" id="page-list-order" method="get" th:id="list-order-form">
                     <input hidden="hidden" name="size" th:value="${pageHelper.size}"/>
                     <input hidden="hidden" name="order" th:id="list-order-input" th:value="${pageHelper.order}"/>
                     <ul class="nav nav-pills">
@@ -61,7 +61,7 @@
             </span>
             <!--列表-->
             
-            <ul th:each="article:${pageHelper.publishes}" th:if="${not #lists.isEmpty(pageHelper.publishes)}">
+            <ul th:each="article:${pageHelper.publishes}" th:if="${pageHelper!=null}&&${not #lists.isEmpty(pageHelper.publishes)}">
                 <div style="height: 170px; padding: 10px;margin: 20px;
                 border: 1px solid #eee;border-radius: 3px;
                 border-left-width: 5px; border-left-color: #1b809e;
@@ -132,7 +132,7 @@
                 </ul>
                 <!--跳页-->
                 <ul class="pagination" style="float: left;margin-left: 20px;margin-right: 20px;">
-                    <form action="/home" class="form-inline" method="get">
+                    <form action="#" class="form-inline" method="get">
                         <input class="form-control" name="page" style="width: 90px;padding-left: 6px;"
                                 th:placeholder="'共'+${pageHelper.maxPage}+'页'" type="number">
                         <input hidden="hidden" name="size" th:value="${pageHelper.size}"/>
@@ -141,7 +141,7 @@
                 </ul>
                 <!--设定页大小-->
                 <ul class="pagination" style="float: left;margin-left: 20px;margin-right: 20px;">
-                    <form action="/home" class="form-inline" method="get">
+                    <form action="#" class="form-inline" method="get">
                         <label>每页</label>
                         <input class="form-control" name="size" style="width: 66px;" th:placeholder="${pageHelper.size}"
                                 type="number">

@@ -11,7 +11,11 @@ import java.util.List;
  * @Description:
  */
 public interface CommentService {
-    
+    /**
+     * 添加评论，内部识别评论等级，相应处理
+     * @param comment 评论对象
+     * @return
+     */
     Comment addComment(Comment comment);
     
 }

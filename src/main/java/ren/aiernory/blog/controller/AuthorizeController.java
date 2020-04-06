@@ -187,17 +187,17 @@ public class AuthorizeController {
     
     
     @Resource
-    SortMapper sortMapper;
-    
+    private SortMapper sortMapper;
+    @Autowired
+    private Sort sortTree;
     @GetMapping("/autoCheck")
     public String autoCheck(HttpServletRequest request){
         HttpSession session = request.getSession();
         session.setAttribute("state",1);
         //分类对象。启动时直接创建比较好...
-    
-        Sort allAsTree = sortMapper.getAllAsTree(-1);
         
-        session.setAttribute("sidebar",allAsTree);
+        //href、id、name
+        session.setAttribute("sidebar",sortTree);
         cookieLogin.cookieVerify(request);
         referer = request.getHeader("referer");
         return "redirect:"+referer;

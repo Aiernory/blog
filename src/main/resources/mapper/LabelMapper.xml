@@ -17,11 +17,11 @@
         where name = #{name}
     </select>
     <!--阅读数增加-->
-    <select id="incCount" parameterType="Integer" resultType="Integer">
+    <update id="incCount" parameterType="Integer" >
         update label
         set count = count+1
         where id = #{id}
-    </select>
+    </update>
     
     <!--添加新的词条,返回id-->
     <insert id="addLabel" parameterType="ren.aiernory.blog.model.Label" useGeneratedKeys="true" keyProperty="id">
@@ -30,7 +30,7 @@
     </insert>
     
     
-    
+    <!--查找一个文章的labels-->
     <select id="getLabelsByArticleId" parameterType="Integer" resultType="Integer">
         select l_id
         from article_label
@@ -42,4 +42,19 @@
         insert into article_label(p_id,l_id)
         VALUES (#{pId},#{lId})
     </insert>
+    
+    <!--根据label找到article。查询功能-->
+    <select id="getArticlesByLabelId" parameterType="Integer" resultType="Integer">
+        select p_id
+        from article_label
+        where l_id = #{labelId}
+    </select>
+    
+    <!--search使用-->
+    <select id="getIdByName" parameterType="String" resultType="Integer">
+        select id
+        from label
+        where name = #{name}
+    </select>
+    
 </mapper>

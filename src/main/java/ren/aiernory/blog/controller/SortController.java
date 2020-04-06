@@ -77,26 +77,8 @@ public class SortController {
                                    @RequestParam(name = "size", defaultValue = "7") Integer size,
                                    @RequestParam(name = "order",defaultValue = "1") Integer order) {
         
-        if (size < 1) {
-            //方式乱get，导致后台报错问题
-            size = 1;
-        }
-        if (page < 1) {
-            //方式乱get，导致后台报错问题
-            page = 1;
-        }
-        if(order<1||order>6){
-            order =1 ;
-        }
-        
-        //有个分类库，找分类库，参数对不对
-        if(false){
-         //参数不对,查所有
-         sort="ALL";
-        }
-        
-        PageHelper pageHelper = sortService.listBySort(page, size,order,sort);
-        //PageHelper pageHelper = publishService.listPage(page, size,order);
+
+        PageHelper pageHelper = publishService.listBySort(page, size,order,sort);
         modelAndView.addObject("pageHelper", pageHelper);
         modelAndView.addObject("sort", sort);
         modelAndView.setViewName("home");

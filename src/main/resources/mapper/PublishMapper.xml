@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ren.aiernory.blog.mapper.PublishMapper">
     
-    <!--publish表、user表全部信息-->
+    <!--修改用到，其他ResultMap的基本参考-->
     <resultMap id="publishWithAuthor" type="ren.aiernory.blog.model.Publish">
         <id column="id" property="id"/>
         <result property="title" column="title"/>
@@ -25,25 +25,7 @@
         </association>
     </resultMap>
     
-    <!--给分页展示用的，简略信息-->
-    <resultMap id="publishWithAuthorForPageList" type="ren.aiernory.blog.model.Publish">
-        <id column="id" property="id"/>
-        <result property="title" column="title"/>
-        <result property="descriptionDoc" column="descriptionDoc"/>
-        <result property="gmtCreate" column="gmt_create"/>
-        <result property="gmtModified" column="gmt_modified"/>
-        <result property="creator" column="creator"/>
-        <result property="viewCount" column="view_count"/>
-        <result property="likeCount" column="like_count"/>
-        <result property="commentCount" column="comment_count"/>
-        <association property="author" javaType="ren.aiernory.blog.model.User" fetchType="lazy">
-            <id property="id" column="creator"/>
-            <result property="name" column="name"/>
-            <result property="avatarUrl" column="avatar_url"/>
-        </association>
-    </resultMap>
-    
-    <!--带有作者信息、评论、文章内容-->
+    <!--带有作者信息、评论、文章内容。打开文章-->
     <resultMap id="publishWithAuthorAndComment" type="ren.aiernory.blog.model.Publish">
         <id column="id" property="id"/>
         <result property="title" column="title"/>
@@ -78,61 +60,20 @@
         </collection>
     </resultMap>
     
-    
-    <!--全部文章分页,home页面的列表-->
-    <select id="listAllWithUserByPage" resultMap="publishWithAuthorForPageList">
-        select p.*,concat(left(p.description_doc,200),'...') as descriptionDoc,u.id,u.name,u.avatar_url
-        from publish AS p,user AS u
-        where u.id=p.creator
-        <if test="order == 1" >
-            order by p.id desc
-        </if>
-        <if test="order == 2" >
-            order by p.id asc
-        </if>
-        <if test="order == 3" >
-            order by gmt_modified desc
-        </if>
-        <if test="order == 4" >
-            order by gmt_modified asc
-        </if>
-        <if test="order == 5" >
-            order by comment_count desc
-        </if>
-        <if test="order == 6" >
-            order by comment_count asc
-        </if>
-        limit #{page},#{size}
-    </select>
-    
-    
     <!--总数，分页信息统计-->
     <select id="getTotalCount" resultType="Integer">
         select count(1)
         from publish
     </select>
     
-    
-    
-    <!--用户文章分页，个人信息-->
-    <select id="listByCreatorWithUserByPage" resultMap="publishWithAuthorForPageList">
-        select p.*,u.id,u.name,u.avatar_url
-        from publish AS p,user AS u
-        where u.id=#{user.id} and u.id=p.creator
-        limit #{page},#{size}
-    </select>
-    
-    
-    
     <!--用户的文章数，个人信息分页-->
     <select id="getTotalCountByCreator" resultType="Integer">
         select count(1)
         from publish
-        where creator=#{user.id}
+        where creator=#{id}
     </select>
     
-  
-    <!--结果带上user，打开文章时（评论时获取存在与否信息，这点需要改变、简化）-->
+    <!--结果带上user，打开文章时（评论时获取存在与否信息，这点需要改变、简化。已简化）-->
     <select id="selectByIdWithComments" parameterType="Integer" resultMap="publishWithAuthorAndComment">
         SELECT pub.*,
         user1.id id1,user1.name name1,user1.bio bio1,user1.avatar_url avatarUrl1,
@@ -152,14 +93,12 @@
         WHERE pub.id=#{id}
     </select>
     
-    
-    
+    <!--修改时用到-->
     <select id="selectByIdWithAuthor" parameterType="Integer" resultMap="publishWithAuthor">
         select p.*,u.id,u.name,u.bio,u.avatar_url
         from publish p,user u
         where p.id = #{id} and u.id=p.creator
     </select>
-    
     
     <!--检测是否存在-->
     <select id="verify" parameterType="Integer" resultType="Integer">
@@ -168,14 +107,12 @@
         where p.id = #{id}
     </select>
     
-    
     <!--阅读数增加-->
     <select id="incView" parameterType="Integer" resultType="Integer">
         update publish
         set view_count = view_count+1
         where id = #{id}
     </select>
-    
     
     <!--评论数增加-->
     <select id="incComment" resultType="Integer">
@@ -184,38 +121,89 @@
         where id = #{id}
     </select>
     
-  
-    <!--全部文章分页,home页面的列表。再加上分类功能-->
-    <select id="listAllWithUserByPageBySort" resultMap="publishWithAuthorForPageList">
+    
+    <!--给分页展示用的，简略信息。list分页-->
+    <resultMap id="publishWithAuthorForPageList" type="ren.aiernory.blog.model.Publish">
+        <id column="id" property="id"/>
+        <result property="title" column="title"/>
+        <result property="descriptionDoc" column="descriptionDoc"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="creator" column="creator"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <association property="author" javaType="ren.aiernory.blog.model.User" fetchType="lazy">
+            <id property="id" column="creator"/>
+            <result property="name" column="name"/>
+            <result property="avatarUrl" column="avatar_url"/>
+        </association>
+    </resultMap>
+    
+    <!--分页展示内容列表-->
+    <select id="listPage" resultMap="publishWithAuthorForPageList">
         select p.*,concat(left(p.description_doc,200),'...') as descriptionDoc,u.id,u.name,u.avatar_url
         from publish AS p,user AS u
-        WHERE p.id IN ${sorts}
-        AND p.creator=u.id
-        <if test="order == 1" >
-            order by p.id desc
-        </if>
-        <if test="order == 2" >
-            order by p.id asc
-        </if>
-        <if test="order == 3" >
-            order by gmt_modified desc
-        </if>
-        <if test="order == 4" >
-            order by gmt_modified asc
-        </if>
-        <if test="order == 5" >
-            order by comment_count desc
-        </if>
-        <if test="order == 6" >
-            order by comment_count asc
-        </if>
+        where u.id=p.creator
+        <choose>
+            <when test="order == 2">
+                order by p.id asc
+            </when>
+            <when test="order == 3">
+                order by gmt_modified desc
+            </when>
+            <when test="order == 4">
+                order by gmt_modified asc
+            </when>
+            <when test="order == 5">
+                order by comment_count desc
+            </when>
+            <when test="order == 6">
+                order by comment_count asc
+            </when>
+            <otherwise>
+                order by p.id desc
+            </otherwise>
+        </choose>
         limit #{page},#{size}
     </select>
-
-
-
-
-
-
-
+    <select id="listPageByCreator" resultMap="publishWithAuthorForPageList">
+        select p.*,u.id,u.name,u.avatar_url
+        from publish AS p,user AS u
+        where u.id=#{uId} and u.id=p.creator
+        limit #{page},#{size}
+    </select>
+    <select id="listPageBySelect" resultMap="publishWithAuthorForPageList">
+        select p.*,concat(left(p.description_doc,200),'...') as descriptionDoc,u.id,u.name,u.avatar_url
+        from publish AS p,user AS u
+        where p.id IN ${articles} and u.id=p.creator
+        <choose>
+            <when test="order == 2">
+                order by p.id asc
+            </when>
+            <when test="order == 3">
+                order by gmt_modified desc
+            </when>
+            <when test="order == 4">
+                order by gmt_modified asc
+            </when>
+            <when test="order == 5">
+                order by comment_count desc
+            </when>
+            <when test="order == 6">
+                order by comment_count asc
+            </when>
+            <otherwise>
+                order by p.id desc
+            </otherwise>
+        </choose>
+        limit #{page},#{size}
+    </select>
+    
+    <!--根据title，模糊，ids-->
+    <select id="getArticlesByTitle" parameterType="String" resultType="Integer">
+        select id
+        from publish
+        where title like concat('%',#{title},'%')
+    </select>
 </mapper>

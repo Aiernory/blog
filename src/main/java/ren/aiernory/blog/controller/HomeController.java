@@ -37,17 +37,6 @@ public class HomeController {
         6   commentCount 升序
          */
  
-        if (size < 1) {
-            //方式乱get，导致后台报错问题
-            size = 1;
-        }
-        if (page < 1) {
-            //方式乱get，导致后台报错问题
-            page = 1;
-        }
-        if(order<1||order>6){
-            order =1 ;
-        }
         PageHelper pageHelper = publishService.listPage(page, size,order);
         modelAndView.addObject("pageHelper", pageHelper);
         modelAndView.setViewName("home");

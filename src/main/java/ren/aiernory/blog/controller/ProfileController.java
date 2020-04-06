@@ -43,7 +43,7 @@ public class ProfileController {
         if ("article".equals(action)) {
             model.addAttribute("section", "article");
             model.addAttribute("sectionName", "我的文章");
-            PageHelper pageHelper = publishService.listByCreator(user, page, size);
+            PageHelper pageHelper = publishService.listByCreator(page, size,user.getId());
             model.addAttribute("pageHelper", pageHelper);
         } else if ("message".equals(action)) {
             model.addAttribute("section", "message");
@@ -71,7 +71,7 @@ public class ProfileController {
         modelAndView.addObject("section", "article");
         modelAndView.addObject("sectionName", user.getName()+"的文章列表");
         modelAndView.addObject("title", user.getName()+"的专栏");
-        PageHelper pageHelper = publishService.listByCreator(user, page, size);
+        PageHelper pageHelper = publishService.listByCreator( page, size,user.getId());
         modelAndView.addObject("pageHelper", pageHelper);
         modelAndView.setViewName("profile");
         return modelAndView;

@@ -13,6 +13,8 @@ import java.util.List;
  * @Description:
  */
 public interface LabelMapper extends Mapper<Label> {
+
+    
     String getNameById(Integer id);
     
     Integer checkName(String label);
@@ -25,5 +27,9 @@ public interface LabelMapper extends Mapper<Label> {
     
     List<Integer> getLabelsByArticleId(Integer articleId);
     
-    int insertToArticleLabel(ArticleLabel articleLabel);
+    Integer insertToArticleLabel(ArticleLabel articleLabel);
+    
+    List<Integer> getArticlesByLabelId(Integer labelId);
+    
+    Integer getIdByName(String name);
 }

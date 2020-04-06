@@ -13,19 +13,20 @@
 <script src="/plugins/editor.md-master/editormd.js"></script>
 <script src="/js/editorMdPublish.js"></script>
 <!--others-->
-<script src="/js/addmusic.js"></script>
+<script src="/js/publish.js"></script>
 
 
-<div class="layui-body"  style="margin-top: 60px">
+<div class="layui-body" style="margin-top: 60px">
     <!-- 独特内容 -->
     <div class="row" style="padding: 15px;">
         <!--文章信息-->
         <div class="col-lg-6 col-md-8 col-sm-10">
-        
-        
-            <!--尝试保存内容，现在要去看视频了-->
-            <form th:method="${action!='edit'}?'post':'put'" th:action="${action!='edit'}?'/publish':'/publish/edit/'+${article.id}">
             
+            
+            <!--尝试保存内容，现在要去看视频了-->
+            <form th:action="${action!='edit'}?'/publish':'/publish/edit/'+${article.id}"
+                    th:method="${action!='edit'}?'post':'put'">
+                
                 <!--浅绿色，标题-->
                 <div class="panel panel-success">
                     <div class="panel-body input-group ">
@@ -34,7 +35,7 @@
                                 th:value="${action=='edit'}?${article.title}:''" type="text">
                     </div>
                 </div>
-            
+                
                 <!--浅蓝色，音乐-->
                 <div class="panel panel-info">
                     <!--模态框--><!-- Button trigger modal -->
@@ -55,13 +56,13 @@
                     </a>
                     <!--编辑的时候，如果选了音乐，在这给提示一下-->
                     <div id="show-music-msg">未选择音乐</div>
-                    <div id="edit-music-msg" hidden="hidden" th:text="${action=='edit'&&article.musicStatus!=0}?${article.musicStatus}+'/*-'+${article.musicContent}"></div>
-                    <button id="clean-music-btn" type="button" class="btn btn-default">清除音乐</button>
+                    <div hidden="hidden" id="edit-music-msg"
+                            th:text="${action=='edit'&&article.musicStatus!=0}?${article.musicStatus}+'/*-'+${article.musicContent}"></div>
+                    <button class="btn btn-default" id="clean-music-btn" type="button">清除音乐</button>
                     <!--th:value="${action=='edit'}?${article.title}:''"-->
                     <!--th:text="${article!=null&&article.musicStatus=='1'}?'网易音乐id:'+${article.musicContent}"-->
-                
-                
-                
+                    
+                    
                     <!--<div  th:text="${action=='edit'&&article.musicStatus!=0&&article.musicStatus==2}?'网易音乐id:'+${article.musicContent}:-->
                     <!--                     '服务器本地音乐:'+${article.musicContent}">未选择音乐-->
                     <!--</div>-->
@@ -76,7 +77,7 @@
                                     </button>
                                     <h4 class="modal-title" id="myModalLabel">上传音乐</h4>
                                 </div>
-                            
+                                
                                 <div class="modal-body">
                                     服务器不大，不要上传太高品质的。。。。
                                 </div>
@@ -130,11 +131,11 @@
                                                 <table class="table table-hover" id="add-music-local-table"
                                                         style="table-layout: fixed"></table>
                                             </div>
-                                    
+                                        
                                         </div>
                                     </div>
                                 </div>
-                            
+                                
                                 <div class="modal-footer">
                                     <button class="btn btn-default" data-dismiss="modal" type="button">关闭</button>
                                     <button class="btn btn-default" data-dismiss="modal" id="add-music-btn"
@@ -143,7 +144,7 @@
                                     <input hidden="hidden" id="add-music-input" name="music" placeholder="null"
                                             type="text">
                                 </div>
-                        
+                            
                             </div>
                         </div>
                     </div>
@@ -153,19 +154,37 @@
                 <div class="panel panel-default" id="out-of-layout">
                     <div th:include="editorPage :: editor-body"></div>
                 </div>
-            
+                
                 <!--红色，资源连接功能，未完成-->
                 <div class="panel panel-danger">
                     资源连接...
                 </div>
+                
+                <!--sort的隐藏input-->
+                <input hidden="hidden" id="sort-input" name="sort" type="text">
+                <!--提交-->
                 <input class="btn btn-danger" disabled id="publish-submit" style="float: right"
                         th:value="${action=='edit'}?'更新':'发表'" type="submit"/>
-        
+            
             </form>
-    
+        
         </div>
         <!--副面板-->
-        <div class="col-lg-4 col-md-3 col-sm-2" style="background-color: silver"></div>
+        <div class="col-lg-4 col-md-3 col-sm-2" style="background-color: whitesmoke">
+            <!--文章种类选择-->
+            <div >
+                <h3 style="margin-top: 20px;margin-bottom: 15px" > 分类选择（发表后不能再修改） </h3>
+                <div th:if="${action=='edit'}">修改时不可用</div>
+                <!--tree 挂载节点-->
+                <div class="demo-tree" id="publish-sort" th:if="${action!='edit'}"></div>
+                <!--tree 数据获取按钮-->
+                <div class="layui-btn-container" th:if="${action!='edit'}" style="margin-top: 30px">
+                    <button class="layui-btn layui-btn-sm" id="sort-btn" lay-demo="getChecked" type="button">确定</button>
+                </div>
+                <!--tree 从session获取数据，放到js。中转-->
+                <div hidden th:text="${sortJson}" id="sortJson"></div>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -27,12 +27,20 @@
         <collection property="children" select="getAllAsTree" column="id">
         </collection>
     </resultMap>
-    
+    <!--获取树状sort结构-->
     <select id="getAllAsTree" resultMap="allAsTree" parameterType="Integer">
         select id,name,concat('/sort/',name) as href
         from sort
         where parent=#{id}
     </select>
-    
+    <insert id="insertToArticleSort">
+        insert into
+        article_sort(p_id,s_id)
+        values
+        <foreach collection="sorts" item="sort" separator=",">
+        (#{pId},#{sort})
+        </foreach>
+    </insert>
+
 
 </mapper>

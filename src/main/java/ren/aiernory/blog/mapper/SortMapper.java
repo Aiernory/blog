@@ -12,10 +12,13 @@ import java.util.List;
  * @Description:
  */
 public interface SortMapper extends Mapper<Sort> {
-        //<!--根据名字，获取id-->
-    int getSortId(String sort);
+    //<!--根据名字，获取id-->
+    Integer getSortId(String sort);
+    
     //<!--根据s_id获取p_id数组-->
     List<Integer> getArticlesBySortId(int sortId);
     
     Sort getAllAsTree(int pId);
+    
+    Integer insertToArticleSort(int pId, List<Integer> sorts);
 }

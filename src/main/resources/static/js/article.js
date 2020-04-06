@@ -134,17 +134,31 @@ $(function () {
         dataType:"json",
         //成功
         success: function (data) {
-            for (let i = 0; i < data.length; i++) {
-                let i_data = data[i];
+			//本来是一个字符串列表，现在是对象列表
+
+            data.forEach(function (label) {
                 let i_btn = labelSearch.clone();
-                i_btn.children(".label-area-btn-span").html(i_data);
+                i_btn.children(".label-area-btn-span").html(label.name)
                 i_btn.insertAfter("#label-search-area");
-            }
+                i_btn.attr("id","label-btn-search-"+label.id);
+            })
+
         },
         //失败，包含具体的错误信息
         error: function (e) {
         }
     });
+
+    //标签的点击查询
+    $(".layui-body").on("click", ".label-area-btn-search", function () {
+        label_id=$(this).attr("id");
+        label_name=$(this).children(".label-area-btn-span").html();
+        //label-btn-search-13
+        let split = label_id.split("-");
+        location.href="/search/label/"+split[3]+":"+label_name;
+    });
+
+
 
     //临时标签加载
     $.ajax({

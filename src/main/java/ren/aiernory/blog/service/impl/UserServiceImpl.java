@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     
   
     @Override
-    public User login(GithubUser githubUser, HttpServletRequest request, HttpServletResponse response) {
+    public User login(GithubUser githubUser, HttpServletRequest request) {
         //验证cookie
         Cookie[] cookies = request.getCookies();
         User user;

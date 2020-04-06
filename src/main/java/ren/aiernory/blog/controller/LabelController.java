@@ -8,10 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.Jedis;
 import ren.aiernory.blog.enums.ErrorCodeEnum;
+import ren.aiernory.blog.model.Label;
 import ren.aiernory.blog.model.User;
 import ren.aiernory.blog.resultMessage.ErrorMessage;
 import ren.aiernory.blog.service.LabelService;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -65,17 +67,19 @@ public class LabelController {
     //要key，还可以做其他东西的缓存。map数据类型，其中value又为集合
     
     //决定，不要key了，该redis只存储标签喜欢信息。若整缓存，再去了解集成多个redis
-    //
     
     
-    //完全继承自Jedis
-    //手动注入...
-    @Autowired
+    
+ 
+    //制定了bean名称，按名称注入。
+    @Resource
     private Jedis myJedis;
     @Autowired
     private LabelService labelService;
+    //标签升级的阈值..
     @Value("${redis.label.persist}")
     private Integer labelThreshold;
+    //sync锁的对象
     private static Object lockObj=new Object();
     
     //添加标签。直接加到redis..修改set键的名称:  1:java  1
@@ -183,8 +187,8 @@ public class LabelController {
         JSONObject obj = JSONObject.parseObject(body);
         Integer articleId = obj.getInteger("articleId");
         //差mysql库，找到持久化的标签。
-        List<String> names = labelService.getLabelNameByArticleId(articleId);
-        return JSON.toJSONString(names);
+        List<Label> labels = labelService.getLabelNameByArticleId(articleId);
+        return JSON.toJSONString(labels);
     }
     
     /**

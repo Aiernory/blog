@@ -161,5 +161,42 @@ $(function () {
         });
     });
     $('[data-toggle="popover"]').popover();
+
+
+
+
+//种类选择树
+    let sort_data =$("#sortJson").html();
+    let parse = JSON.parse(sort_data);
+    layui.use(['tree', 'util'], function () {
+        var tree = layui.tree,
+            layer = layui.layer,
+            util = layui.util;
+        //按钮事件
+        util.event('lay-demo', {
+            getChecked: function (othis) {
+                let checkedData = tree.getChecked('checkbox-sort'); //获取选中节点的数据
+                $("#sort-input").val(JSON.stringify(checkedData));
+                let btnHtml = $("#sort-btn").html();
+                if(btnHtml == '确定'){
+                    $("#sort-btn").html("done，提交文章后生效");
+                }else {
+                    $("#sort-btn").html(btnHtml+"！");
+                }
+            }
+        });
+        tree.render({
+            elem: '#publish-sort',//目标div
+            data: parse,//数据源
+            showCheckbox: true , //是否显示复选框
+            accordion:false ,//手风琴模式.不能同时展开..
+            id: 'checkbox-sort',//按钮操作需要id
+            isJump :false,//跳转
+            showLine:false,//连线
+            //有一点，父节点不能单独选取，若果要改会很麻烦。尝试一下，不行就放弃。一个隐藏的来表示父节点
+        });
+
+    })
+
 });
 

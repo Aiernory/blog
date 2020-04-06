@@ -29,11 +29,11 @@
         where id=#{id}
     </select>
     <!--评论数增加,同时更新时间-->
-    <select id="incComment"  resultType="Integer" >
+    <update id="incComment" >
         update comment
         set comment_count = comment_count+1,gmt_modified = #{time}
         where id = #{id}
-    </select>
+    </update>
     <!--检测存在使用到的少量信息-->
     <select id="verify" parameterType="Integer" resultMap="verify">
         select c.*,u.*

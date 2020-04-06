@@ -22,26 +22,25 @@ public class LabelServiceImpl implements LabelService {
     
     @Resource
     private LabelMapper labelMapper;
-  
+    
     
     //持久化一个文章的标签
     @Override
-    public int addArticleLabel(Integer articleId, String labelName) {
+    public Integer addArticleLabel(Integer articleId, String labelName) {
         ArticleLabel articleLabel = new ArticleLabel();
         articleLabel.setPId(articleId);
         
-   
         Integer id = labelMapper.checkName(labelName);
-        if(id==null){
-            Label label=new Label();
+        if (id == null) {
+            Label label = new Label();
             label.setName(labelName);
             label.setCount(1);
             //检测label是否已经有了
             
             //没有,新增。并且count设置为1
             labelMapper.addLabel(label);
-            id=label.getId();
-        }else{
+            id = label.getId();
+        } else {
             //,有的话count++
             labelMapper.incCount(id);
         }
@@ -50,20 +49,23 @@ public class LabelServiceImpl implements LabelService {
         return labelMapper.insertToArticleLabel(articleLabel);
     }
     
- 
     
     //字面意思，通过文章id得到标签名字list
     @Override
-    public List<String> getLabelNameByArticleId(Integer articleId) {
-        List<String> names = new ArrayList<>();
+    public List<Label> getLabelNameByArticleId(Integer articleId) {
+        List<Label> Labels = new ArrayList<>();
         
         List<Integer> labelsId = labelMapper.getLabelsByArticleId(articleId);
+        
         labelsId.forEach(
                 id -> {
-                    names.add(this.getNameById(id));
+                    Label label = new Label();
+                    label.setId(id);
+                    label.setName(this.getNameById(id));
+                    Labels.add(label);
                 }
         );
-        return names;
+        return Labels;
     }
     
     //根据id，得到name
@@ -72,5 +74,15 @@ public class LabelServiceImpl implements LabelService {
         return labelMapper.getNameById(id);
     }
     
- 
+    @Override
+    public List<Integer> getArticlesByLabelId(Integer labelId) {
+        return labelMapper.getArticlesByLabelId(labelId);
+    }
+    
+    @Override
+    public Integer getIdByName(String label) {
+        return labelMapper.getIdByName(label);
+    }
+    
+    
 }

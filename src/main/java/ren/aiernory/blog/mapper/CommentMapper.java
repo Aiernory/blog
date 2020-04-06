@@ -17,7 +17,5 @@ public interface CommentMapper extends Mapper<Comment> {
     
     Integer incComment(@Param("id") Integer id, @Param("time")Long time);
     
-    List<Comment> selectListByPublish(Integer articleId);
-    
     Comment verify(Integer id);
 }
