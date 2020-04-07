@@ -310,5 +310,42 @@ $(function () {
 
     //alert 需要改成自动消失的提示
 
+
+
+
+//删除评论
+    var del_id;
+    var del_ids;
+    $(".my-delete-btn").click(function () {
+        //bootstrap 调起模态框，这里赋值id
+        del_id = $(this).children().attr("id");
+            //如： 13-children-[]数组对象
+        if(del_id.length>7){
+            //含有子评论
+            let split = del_id.split("-children-");
+            //正则放在客户端。
+            let search = split[1].match(/(?<=id=)[0-9]+(?=,[\s]+content=)/g);
+            del_ids=split[0]+","+search
+        }else {
+            del_ids=del_id;
+        }
+
+    });
+    $(".my-delete-verify").click(function () {
+        $.ajax({
+            type: "DELETE",//请求方式
+            contentType: "application/json;charset=UTF-8",    //请求的媒体类型
+            url: "/del/comment",    //请求地址
+            data: del_ids,
+            sync: true,//异步
+            dataType: "json",
+            success: function (data) {
+                location.reload();
+            },
+            error: function (e) {
+            }
+        });
+    })
+
 });
 

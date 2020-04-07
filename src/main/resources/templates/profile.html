@@ -7,35 +7,67 @@
 
 <div th:insert="header::h5-pre"/>
 
-<div class="layui-body"  style="margin-top: 60px">
+<div class="layui-body" style="margin-top: 60px">
     <!-- 独特内容 -->
+    <script src="/js/profile.js"></script>
+    
     <div class="row" style="padding: 15px;">
-   
         <!--主面板-->
         <!--article列表-->
         <div class="col-lg-6 col-md-8 col-sm-10" th:if="${section=='article'}">
             <h2><span th:text="${sectionName}"></span></h2>
             <div th:if="${not #lists.isEmpty(pageHelper.publishes)}">
                 <!--列表-->
-                <ul th:each="article:${pageHelper.publishes}" >
+                <ul th:each="article:${pageHelper.publishes}">
                     <div style="height: 55px;margin: 5px 0;padding: 5px;border: 1px solid #eee;border-radius: 3px;
                 border-left-width: 5px; border-left-color: #1b809e;
                 border-top-width: 2px; border-top-color: #66e9ff;
                 border-bottom-width: 1px; border-bottom-color: #0e364a;">
                         <div class="media-body">
-                            <h4 class="media-heading"><a th:href="'/article/'+${article.id}" th:text="${article.title}"/></h4>
+                            <h4 class="media-heading"><a th:href="'/article/'+${article.id}"
+                                    th:text="${article.title}"/></h4>
                             <!--统计信息-->
-                            <span style="font-size: 14px;font-weight: normal;color: #999999"
-                                    th:text="'创建时间'+${#dates.format(article.gmtCreate,'yy/MM/dd HH:mm')}
+                            <span style="font-size: 14px;font-weight: normal;color: #999999" th:text="'创建时间'+${#dates.format(article.gmtCreate,'yy/MM/dd HH:mm')}
                                 +' | 最新回复'+${#dates.format(article.gmtModified,'yy/MM/dd HH:mm')}
                                 +' | '+${article.viewCount}
                                 +'次查看 | '+${article.commentCount}
                                 +'条回复 | '+${article.likeCount}+'个赞'"/>
+                            <span style="float: right" th:if="${title==null}">
+                                <button class="btn btn-primary my-delete-btn" data-target=".my-delete-modal" data-toggle="modal"
+                                        type="button" >
+                                     <span th:id="${article.id}"  aria-hidden="true" class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </span>
                         </div>
                     </div>
                 </ul>
+                <!--删除的model。只一份，公用-->
+                <div th:if="${title==null}" aria-labelledby="mySmallModalLabel" class="modal fade bs-example-modal-sm my-delete-modal"
+                         role="dialog" tabindex="-1">
+                    <div class="modal-dialog modal-sm" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button aria-label="Close" class="close" data-dismiss="modal"
+                                        type="button"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">确定删除？（不可逆）</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-default" data-dismiss="modal"
+                                        type="button">取消</button>
+                                <button class="btn btn-primary my-delete-verify" type="button" >删除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <!--按钮id my-delete-btn-->
+                <!--框框id my-delete-modal-->
+                <!--按钮下面，有个图标span。获取它的id，删除对应id-->
+                <!--按钮id my-delete-verify，确定删除-->
+                
                 <!--分页-->
-                <nav aria-label="Page navigation" >
+                <nav aria-label="Page navigation">
                     <!--页标-->
                     <ul class="pagination" id="change-page" style="float: left;margin-left: 20px;margin-right: 20px;">
                         <!--位置变来变去不好-->
@@ -49,8 +81,7 @@
                         <!--5个页码-->
                         <li th:class="${pageHelper.currentPage==page}?'active':''" th:each="page:${pageHelper.pageList}"
                                 th:if="${not #lists.isEmpty(pageHelper.pageList)}">
-                            <a th:href="'/profile/article?page='+${page}"
-                                    th:text="${page}"></a>
+                            <a th:href="'/profile/article?page='+${page}" th:text="${page}"></a>
                         </li>
                         <!--下页和尾页,隐藏占位-->
                         <li th:class="${pageHelper.showNext}?'':'hideden-placehode'"><a
@@ -80,7 +111,7 @@
         <div class="col-lg-6 col-md-8 col-sm-10" th:if="${section=='reply'}">
             <h2><span th:text="${sectionName}"></span></h2>
         </div>
-    
+        
         <!--副面板-->
         <div class="col-lg-4 col-md-3 col-sm-2" style="background-color: silver">
             <div class="list-group">

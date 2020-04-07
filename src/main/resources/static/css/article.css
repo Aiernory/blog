@@ -145,18 +145,6 @@
 
 
 
-    /*评论按钮*/
-.show-input-child-comment, .show-input-comment,.show-detail-comment {
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    margin-left: 5px;
-    font-size: 10px;
-    color: #231e1e;
-    background-color: whitesmoke;
-    border-color: silver;
-}
 
 
 /*评论输入框*/

@@ -1,2 +1,11 @@
 
+/*评论按钮*/
+.show-input-child-comment, .show-input-comment,.show-detail-comment,.my-delete-btn {
+    padding: 3px;
+    margin-left: 5px;
+    font-size: 10px;
+    color: #231e1e;
+    background-color: whitesmoke;
+    border-color: silver;
+}
 

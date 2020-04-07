@@ -54,6 +54,8 @@ public class MyBeansConfig {
     }
     @Bean(name = "sortJson")
     public String getSortJson(){
+        //这里考虑一下，加个定时，多长时间重载一次，不和后台管理通信，一定程度兼容后台操作。
+        
         Sort sort = this.getSort();
         String jsonString="";
         if (sort != null) {

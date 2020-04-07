@@ -6,7 +6,6 @@
 </head>
 
 
-
 <div th:insert="header::h5-pre"/>
 <!--其他-->
 <link href="/plugins/editor.md-master/css/editormd.preview.css" rel="stylesheet">
@@ -19,13 +18,11 @@
 <link href="/css/article.css" rel="stylesheet"/>
 
 
-
-<div class="layui-body"  th:if="${article!=null}" style="margin-top: 60px">
+<div class="layui-body" style="margin-top: 60px" th:if="${article!=null}">
     <!-- 独特内容 -->
     <div class="row" style="padding: 15px;">
         <!--文章信息-->
-        <div class="col-lg-6 col-md-8 col-sm-10"
-                style="background-color: #c9f3ff;margin-left: 30px;padding-top: 20px">
+        <div class="col-lg-6 col-md-8 col-sm-10" style="background-color: #c9f3ff;margin-left: 30px;padding-top: 20px">
             <!--主面板-->
             <div class="panel panel-default my-main-panel ">
                 <!--标题版-->
@@ -95,28 +92,28 @@
                             ap.init();
                         </script>
                     </div>
-                
+                    
                     <!--md显示栏-->
                     <div id="article-content" th:utext="${article.descriptionCode}"></div>
                     <!--需要边框修改一下...-->
                 </div>
-            
-            
+                
+                
                 <!--标签-->
                 <div class="my-label-panel panel panel-default">
-                    <div class="panel-heading"><span id="label-search-area">标签:</span></div>
+                    <div class="panel-heading">
+                        <span id="label-search-area">标签:</span>
+                        <!--持久标签...删除算了，自由添加的标签怎岂被lz强行删除！！！-->
+                    </div>
                     <div class="panel-body">
                         <!--自定义标签区域-->
-                    
-                        <button aria-label="Left Align" class="btn btn-default label-area-btn-add"
-                                type="button">
+                        <button aria-label="Left Align" class="btn btn-default label-area-btn-add" type="button">
                                     <span aria-hidden="true" class="glyphicon glyphicon-tags"
                                             style="color: #1baebd"></span>
                             <span class="label-area-btn-span">添加标签</span>
                         </button>
                         <!--隐藏的可复用标签-->
-                        <span hidden id="session-user-for-js"
-                                th:text="${session.user==null}?'':${session.user.id}">用户user id</span>
+                        <span hidden id="session-user-for-js" th:text="${session.user==null}?'':${session.user.id}">用户user id</span>
                         <span hidden id="label-area-articleId" th:text="${article.id}">文章id</span>
                         <input hidden id="label-area-input-add" type="text"/>
                         <span class="label-area-temp-heart" style="display: none;">
@@ -124,7 +121,7 @@
                     </span>
                     </div>
                 </div>
-            
+                
                 <!--作者的信息-->
                 <div class="panel panel-default my-author-panel">
                     <div class="panel-heading">
@@ -153,24 +150,22 @@
                         </div>
                     </div>
                 </div>
-        
             </div>
-        
+            
             <!--评论，这东西也需要分页，ajax动态获取-->
-        
+            
             <!--先部分也，全部获取-->
             <div class="panel panel-default" id="comment-list-div">
                 <div class="panel-heading">
-                    <h3 class="panel-title" th:text="${article.commentCount}+'个回复'">Panel title</h3>
+                    <h3 class="panel-title" th:text="${article.commentCount}+'个回复(数量不符，就是已删除)'">Panel title</h3>
                 </div>
                 <div class="panel-body">
                     <!--评论列表面板-->
-                
+                    
                     <ul class="list-group">
-                        <li class="list-group-item comment-list-li "
-                                th:each="comment,commentState:${article.comments}"
-                                th:id="'comment-id-'+${comment.id}"
-                                th:if="${not #lists.isEmpty(article.comments)}">
+                        <span th:if="${#lists.isEmpty(article.comments)}">没有评论...┭┮﹏┭┮</span>
+                        <li class="list-group-item comment-list-li " th:each="comment,commentState:${article.comments}"
+                                th:id="'comment-id-'+${comment.id}" th:if="${not #lists.isEmpty(article.comments)}">
                                 <span style="font-size: 25px;right: 5px;float: right;color: #00acef;user-select: none;position: absolute;"
                                         th:text="'#'+${commentState.count}"> </span>
                             <div class="media">
@@ -178,8 +173,7 @@
                                 <div class="media-left">
                                     <p>
                                         <a th:href="'/profile/'+${comment.author.id}+'/article'">
-                                            <img alt="用户头像" class="media-object"
-                                                    style="height: 60px;width: 60px"
+                                            <img alt="用户头像" class="media-object" style="height: 60px;width: 60px"
                                                     th:src="${comment.author.avatarUrl}">
                                         </a>
                                     </p>
@@ -191,16 +185,21 @@
                                 </div>
                                 <!--评论内容-->
                                 <div class="media-body">
-                                
+                                    
                                     <div class="my-comment-content comment-content" th:utext="${comment.content}"></div>
                                     <div>
                                         <span th:text="${#dates.format(comment.gmtModified,'yy/MM/dd HH:mm')}">评论时间 </span>
                                         <span> <button class="btn btn-info show-input-comment"
                                                 th:id="'show-input-comment-'+${comment.id}"
                                                 th:if="${session.user!=null}" type="button">评论Ta</button></span>
-                                        <span> <button type="button" class="btn btn-info show-detail-comment" data-toggle="modal"
-                                                data-target=".bs-example-modal-lg">detail</button></span>
-                                        
+                                        <span> <button class="btn btn-info show-detail-comment"
+                                                data-target=".comment-details-modal" data-toggle="modal" type="button">detail</button></span>
+                                        <span th:if="${session.user!=null &&(session.user.id==article.author.id|| session.user.id==comment.creator )}">
+                                            <button class="btn btn-info my-delete-btn" data-target=".my-delete-modal"
+                                                    data-toggle="modal" type="button">
+                                            <span aria-hidden="true" class="glyphicon glyphicon-trash"
+                                                    th:id="${comment.id}+'-children-'+${comment.childComment}"></span>
+                                        </button></span>
                                     </div>
                                 </div>
                                 <!--子面板位置1-->
@@ -234,13 +233,20 @@
                                                             th:utext="${childComment.content}"></div>
                                                     <div>
                                                         <span th:text="${#dates.format(childComment.gmtModified,'yy/MM/dd HH:mm')}">评论时间 </span>
-                                                        <span> <button
-                                                                class="btn btn-info show-input-child-comment"
+                                                        <span> <button class="btn btn-info show-input-child-comment"
                                                                 th:id="'show-input-comment-'+${childComment.id}"
                                                                 th:if="${session.user!=null}"
                                                                 type="button">评论Ta</button></span>
-                                                        <span> <button type="button" class="btn btn-info show-detail-comment" data-toggle="modal"
-                                                                data-target=".bs-example-modal-lg">detail</button></span>
+                                                        <span> <button class="btn btn-info show-detail-comment"
+                                                                data-target=".bs-example-modal-lg" data-toggle="modal"
+                                                                type="button">detail</button></span>
+                                                        <span th:if="${session.user!=null &&(session.user.id==article.author.id || session.user.id==childComment.creator) }">
+                                                            <button class="btn btn-info my-delete-btn"
+                                                                    data-target=".my-delete-modal" data-toggle="modal"
+                                                                    type="button">
+                                                            <span aria-hidden="true" class="glyphicon glyphicon-trash"
+                                                                    th:id="${childComment.id}"></span>
+                                                        </button></span>
                                                         <!--<span>点赞算了吧</span>-->
                                                     </div>
                                                 </div>
@@ -251,35 +257,46 @@
                             </div>
                         </li>
                     </ul>
-                    
-                </div>
                 
+                </div>
                 <script>
                     $(".show-detail-comment").click(function () {
                         $("#modal-detail-comment").empty();
                         let clone = $(this).parent().parent().parent().children(".comment-content").clone();
                         clone.removeClass();
                         clone.appendTo("#modal-detail-comment");
-                        
                     })
                 </script>
                 <!--评论详情模态框-->
-                <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-                    <div class="modal-dialog modal-lg" role="document" >
+                <div aria-labelledby="myLargeModalLabel" class="modal fade bs-example-modal-lg comment-details-modal"
+                        role="dialog" tabindex="-1" th:if="${session.user!=null}">
+                    <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
-                            <div class="modal-body" id="modal-detail-comment">
-                           
+                            <div class="modal-body" id="modal-detail-comment"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--删除的model。只一份，公用-->
+                <div aria-labelledby="mySmallModalLabel" class="modal fade bs-example-modal-sm my-delete-modal"
+                        role="dialog" tabindex="-1">
+                    <div class="modal-dialog modal-sm" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">确定删除？（不可逆）</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-default" data-dismiss="modal" type="button">取消</button>
+                                <button class="btn btn-primary my-delete-verify" type="button">删除</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                
-                
+            
+            
             </div>
             <!--评论框框-->
-        
-        
             <div id="comment-input-dialog" th:if="${session.user!=null}">
                 <!--在这里得到ajax需要的data-->
                 <span>
@@ -295,7 +312,7 @@
                     <input hidden name="article" th:value="${article.id}" type="text">
                     <!--parent-->
                     <input hidden name="parent" type="text" value="-1">
-                
+                    
                     <!--是否子评论，这个位置的默认不是子评论，值取-1-->
                     <!--markdown插件-->
                     <!--评论内容-->
@@ -305,7 +322,6 @@
                     <button class="btn  btn-info show-input-article" type="button">返回文章评论</button>
                 </form>
             </div>
-    
         </div>
         <!--副面板-->
         <div class="col-lg-4 col-md-3 col-sm-2" style="background-color: silver"></div>
